@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GASMI Training Assistant - Pagar Nusa Ranting Nguruan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            gasmi: {
+              green: '#173D31',
+              greenLight: '#215444',
+              black: '#101010',
+              surface: '#161B19',
+              card: '#1C2421',
+              gold: '#D9B75B',
+              white: '#FFFFFF',
+              gray: '#F2F2F2'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #101010; color: #FFFFFF; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .m3-card { background-color: #173D31; border: 1px solid rgba(217, 183, 91, 0.18); border-radius: 20px; transition: transform 0.15s ease, border-color 0.2s ease; }
+    .m3-card-dark { background-color: #18211E; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; }
+    .m3-card:active { transform: scale(0.985); }
+    .fade-in { animation: fadeIn 0.22s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-gasmi-gold selection:text-gasmi-black">
+
+  <!-- TOP APP BAR (M3) -->
+  <header class="sticky top-0 z-40 bg-gasmi-black/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
+    <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <!-- Emblem Perisai Sementara (Bukan Logo Resmi Organisasi) -->
+        <div class="w-10 h-10 rounded-xl bg-gasmi-green border border-gasmi-gold/60 flex items-center justify-center shadow-md shrink-0" title="Ilustrasi Perisai Sementara">
+          <svg class="w-6 h-6 text-gasmi-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>
+            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-sm tracking-tight text-white">GASMI</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gasmi-gold/20 text-gasmi-gold border border-gasmi-gold/40">NGURUAN</span>
+          </div>
+          <p class="text-[10px] text-gasmi-gold/90 font-semibold tracking-wider uppercase">Training Assistant</p>
+        </div>
+      </div>
+
+      <!-- Online/Offline Indicator + Role Switcher -->
+      <div class="flex items-center gap-2">
+        <button onclick="toggleConnectionMode()" id="connBadge" class="px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50" title="Klik untuk simulasi Offline/Online">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="connText">Online</span>
+        </button>
+
+        <div class="bg-gasmi-card p-0.5 rounded-full border border-white/10 flex text-[11px] font-bold">
+          <button onclick="switchRole('pelatih')" id="roleBtnPelatih" class="px-2.5 py-1 rounded-full bg-gasmi-green text-white border border-gasmi-gold/50 transition">Pelatih</button>
+          <button onclick="switchRole('anggota')" id="roleBtnAnggota" class="px-2.5 py-1 rounded-full text-white/60 hover:text-white transition">Anggota</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="max-w-md mx-auto w-full flex-1 px-4 pt-3 pb-24">
+
+    <!-- ==================== 1. TAB BERANDA ==================== -->
+    <section id="view-beranda" class="view-section fade-in space-y-4">
+      <!-- Hero Card (Sesuai Desain Referensi) -->
+      <div class="m3-card p-5 shadow-lg relative overflow-hidden">
+        <div class="flex justify-between items-start">
+          <div class="space-y-1">
+            <p class="text-[11px] font-bold uppercase tracking-widest text-gasmi-gold">Salam Persaudaraan</p>
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Selamat datang!</h1>
+            <p class="text-xs text-white/80">Siapkan latihan, bina anggota, jaga tradisi.</p>
+            <p class="text-[10px] italic text-gasmi-gold/80 pt-0.5">"Mewarisi Tradisi, Membangun Prestasi."</p>
+          </div>
+          <span id="roleTagHero" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/30 text-gasmi-gold border border-gasmi-gold/30">
+            Admin Pelatih
+          </span>
+        </div>
+
+        <div class="my-4 border-t border-white/15"></div>
+
+        <div class="flex items-end justify-between">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-white/70">Program Tahunan</p>
+            <div class="flex items-baseline gap-2">
+              <span id="heroMeetingCount" class="text-3xl font-extrabold text-gasmi-gold">104</span>
+              <span class="text-xs text-white/80 font-medium">Pertemuan latihan (<span id="heroDoneCount">0</span> selesai)</span>
+            </div>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-black/25 border border-gasmi-gold/30 flex items-center justify-center text-gasmi-gold text-xl">
+            <i class="fa-solid fa-swords"></i><i class="fa-solid fa-shield-halved"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats Row (Pelatih vs Anggota) -->
+      <div id="berandaStatsRow" class="grid grid-cols-3 gap-2.5">
+        <!-- Diisi dinamis sesuai role -->
+      </div>
+
+      <!-- Menu Utama Grid 2x2 (Sesuai Referensi Gambar) -->
+      <div class="space-y-2.5">
+        <h2 class="text-sm font-bold text-white tracking-wide">Menu utama</h2>
+        <div class="grid grid-cols-2 gap-3" id="menuUtamaGrid">
+          <!-- Diisi dinamis sesuai role -->
+        </div>
+      </div>
+
+      <!-- Agenda Latihan Berikutnya -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-white">Agenda latihan berikutnya</h2>
+          <button onclick="openScheduleModal()" class="coach-only text-[11px] font-bold text-gasmi-gold hover:underline">+ Atur Jadwal</button>
+        </div>
+        <div class="m3-card p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-white/70" id="nextScheduleDate">Sabtu, 19.30 WIB · Halaman Ranting Nguruan</span>
+            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Terjadwal</span>
+          </div>
+          <h3 id="nextScheduleTitle" class="text-lg font-extrabold text-gasmi-gold">Pendasaran</h3>
+          <p id="nextScheduleDesc" class="text-xs text-white/85 leading-relaxed">Pemanasan, pengulangan dasar, kedisiplinan, dan evaluasi.</p>
+          <p class="text-[10px] text-white/50 pt-1">Kurikulum ranting · Jadwal final ditentukan pelatih</p>
+        </div>
+      </div>
+
+      <!-- Pengumuman Pelatih / Ringkasan Presensi -->
+      <div class="m3-card-dark p-4 space-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gasmi-gold flex items-center gap-1.5">
+            <i class="fa-solid fa-bullhorn"></i> Pengumuman & Prinsip Pembinaan
+          </h3>
+        </div>
+        <p class="text-xs text-white/80 leading-relaxed">
+          "Mendahulukan adab daripada kemampuan. Tidak terburu-buru naik materi sebelum menguasai dasar dengan benar serta menjaga kemurnian materi resmi GASMI."
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 2. TAB LATIHAN (KURIKULUM 104 PERTEMUAN & TIMER) ==================== -->
+    <section id="view-latihan" class="view-section hidden fade-in space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-extrabold text-white">Kurikulum 104 Pertemuan</h2>
+          <p class="text-[11px] text-white/60">2x seminggu · 4 Tahap Pembinaan (190 Menit/Sesi)</p>
+        </div>
+        <button onclick="openCurriculumModal()" class="coach-only px-3 py-1.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs shadow flex items-center gap-1">
+          <i class="fa-solid fa-plus"></i> Pertemuan
+        </button>
+      </div>
+
+      <!-- Sub-tab switcher: Kurikulum vs Alur & Timer 190 Menit -->
+      <div class="grid grid-cols-2 gap-2 bg-gasmi-card p-1 rounded-xl border border-white/10 text-xs font-bold">
+        <button onclick="switchLatihanSub('kurikulum')" id="subBtnKurikulum" class="py-2 rounded-lg bg-gasmi-green text-white border border-gasmi-gold/40">Daftar 104 Pertemuan</button>
+        <button onclick="switchLatihanSub('sesi')" id="subBtnSesi" class="py-2 rounded-lg text-white/60">Alur Sesi 190 Menit</button>
+      </div>
+
+      <!-- SUB-VIEW A: DAFTAR 104 PERTEMUAN -->
+      <div id="latihanSubKurikulum" class="space-y-3">
+        <!-- Search & Stage Filter -->
+        <div class="m3-card-dark p-3 space-y-2.5">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+            <input type="text" id="curriculumSearch" oninput="renderCurriculum()" placeholder="Cari pertemuan, materi gerak (mis: Salam, Jangka 8, Bantingan)..." class="w-full pl-8 pr-3 py-2 bg-black/50 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-gasmi-gold">
+          </div>
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold">
+            <button onclick="filterStage('all')" id="stg-all" class="stg-pill px-3 py-1 rounded-full bg-gasmi-gold text-gasmi-black whitespace-nowrap">Semua (104)</button>
+            <button onclick="filterStage(1)" id="stg-1" class="stg-pill px-3 py-1 rounded-full bg-white/10 text-white/70 whitespace-nowrap">Tahap I (1–26)</button>
+            <button onclick="filterStage(2)" id="stg-2" class="stg-pill px-3 py-1 rounded-full bg-white/10 text-white/70 whitespace-nowrap">Tahap II (27–52)</button>
+            <button onclick="filterStage(3)" id="stg-3" class="stg-pill px-3 py-1 rounded-full bg-white/10 text-white/70 whitespace-nowrap">Tahap III (53–78)</button>
+            <button onclick="filterStage(4)" id="stg-4" class="stg-pill px-3 py-1 rounded-full bg-white/10 text-white/70 whitespace-nowrap">Tahap IV (79–104)</button>
+          </div>
+        </div>
+
+        <div id="curriculumContainer" class="space-y-2.5"></div>
+      </div>
+
+      <!-- SUB-VIEW B: ALUR SESI 190 MENIT & TIMER -->
+      <div id="latihanSubSesi" class="hidden space-y-3">
+        <div class="m3-card p-5 text-center space-y-3">
+          <span id="timerLabel" class="text-[11px] font-bold uppercase tracking-widest text-gasmi-gold">Pembukaan, Doa & Penanaman Adab</span>
+          <div id="timerClock" class="text-5xl font-mono font-extrabold text-white tracking-wider">10:00</div>
+          <div class="flex justify-center gap-3 pt-1">
+            <button onclick="toggleRunTimer()" id="btnTimerMain" class="px-5 py-2.5 rounded-full bg-gasmi-gold text-gasmi-black font-extrabold text-xs flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-play" id="timerPlayIcon"></i> <span id="timerPlayText">Mulai Sesi</span>
+            </button>
+            <button onclick="resetRunTimer()" class="px-4 py-2.5 rounded-full bg-black/40 border border-white/15 text-white text-xs font-bold">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="m3-card-dark p-3.5 space-y-2">
+          <div class="flex justify-between items-center text-xs font-bold text-gasmi-gold">
+            <span>Struktur Pertemuan (Total 190 Menit)</span>
+            <span class="text-[10px] text-white/50">Ketuk untuk pilih</span>
+          </div>
+          <div id="sessionSegmentsContainer" class="space-y-1.5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. TAB MATERI (9 KATEGORI TERVERIFIKASI) ==================== -->
+    <section id="view-materi" class="view-section hidden fade-in space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-extrabold text-white">Panduan Materi GASMI</h2>
+          <p class="text-[11px] text-white/60">Tersimpan lokal (Offline-Ready) · Terverifikasi Pelatih</p>
+        </div>
+        <button onclick="openMaterialModal()" class="coach-only px-3 py-1.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs shadow flex items-center gap-1">
+          <i class="fa-solid fa-plus"></i> Materi
+        </button>
+      </div>
+
+      <!-- 9 Kategori Filter -->
+      <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold pb-1" id="materialCategoriesBar"></div>
+
+      <!-- Daftar Materi -->
+      <div id="materialsContainer" class="space-y-2.5"></div>
+    </section>
+
+    <!-- ==================== 4. TAB ANGGOTA (PRESENSI, EVALUASI & DATA ANGGOTA) ==================== -->
+    <section id="view-anggota" class="view-section hidden fade-in space-y-3">
+      <!-- Sub-menu untuk Pelatih vs Anggota -->
+      <div id="anggotaPelatihPanel" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-extrabold text-white">Pembinaan & Anggota</h2>
+            <p class="text-[11px] text-white/60">Data Dummy Demonstrasi · Akun didaftarkan Pelatih</p>
+          </div>
+          <button onclick="openAddMemberModal()" class="px-3 py-1.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs shadow flex items-center gap-1">
+            <i class="fa-solid fa-user-plus"></i> Daftar Akun
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 bg-gasmi-card p-1 rounded-xl border border-white/10 text-[11px] font-bold">
+          <button onclick="switchAnggotaSub('daftar')" id="angSub-daftar" class="py-2 rounded-lg bg-gasmi-green text-white border border-gasmi-gold/40">Data Anggota</button>
+          <button onclick="switchAnggotaSub('presensi')" id="angSub-presensi" class="py-2 rounded-lg text-white/60">Presensi</button>
+          <button onclick="switchAnggotaSub('evaluasi')" id="angSub-evaluasi" class="py-2 rounded-lg text-white/60">Evaluasi</button>
+        </div>
+
+        <!-- Sub A: Daftar Anggota -->
+        <div id="subAnggotaDaftar" class="space-y-2.5"></div>
+
+        <!-- Sub B: Presensi Offline-First -->
+        <div id="subAnggotaPresensi" class="hidden space-y-3">
+          <div class="m3-card-dark p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-gasmi-gold">Catat Presensi Latihan</span>
+              <span id="syncQueueBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">Tersinkron</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <select id="presensiMeetingSelect" class="p-2 rounded-xl bg-black/50 border border-white/15 text-white"></select>
+              <input type="date" id="presensiDateInput" class="p-2 rounded-xl bg-black/50 border border-white/15 text-white">
+            </div>
+            <div id="presensiMembersList" class="space-y-2 pt-1"></div>
+            <button onclick="saveAttendanceBatch()" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs shadow">
+              Simpan Presensi Sesi Ini
+            </button>
+          </div>
+          <div id="attendanceHistoryBox" class="space-y-2"></div>
+        </div>
+
+        <!-- Sub C: Evaluasi 6 Aspek -->
+        <div id="subAnggotaEvaluasi" class="hidden space-y-3">
+          <div class="m3-card-dark p-3.5 space-y-3">
+            <h3 class="text-xs font-bold text-gasmi-gold uppercase">Form Evaluasi Anggota (6 Aspek)</h3>
+            <select id="evalMemberSelect" class="w-full p-2.5 rounded-xl bg-black/50 border border-white/15 text-xs text-white font-semibold"></select>
+            <div id="evalSlidersContainer" class="space-y-2.5"></div>
+            <div class="p-3 rounded-xl bg-gasmi-green border border-gasmi-gold/30 flex items-center justify-between">
+              <div>
+                <p class="text-[10px] text-white/70 uppercase">Nilai Akhir Terbobot</p>
+                <p id="evalFinalScore" class="text-2xl font-extrabold text-gasmi-gold">80.00</p>
+              </div>
+              <div class="text-right">
+                <span id="evalCategoryLabel" class="px-2.5 py-1 rounded-full bg-black/30 text-xs font-bold text-white">Baik (76–85)</span>
+                <p id="evalFollowUpLabel" class="text-[10px] text-white/80 mt-1">Melanjutkan pembinaan dengan penguatan</p>
+              </div>
+            </div>
+            <button onclick="submitMemberEvaluation()" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs shadow">
+              Simpan Hasil Evaluasi Anggota
+            </button>
+          </div>
+          <div id="evalRecordsContainer" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Tampilan Khusus Akun ANGGOTA (Privasi Terjaga: Hanya Data Diri Sendiri) -->
+      <div id="anggotaMemberSelfPanel" class="hidden space-y-3">
+        <div class="m3-card p-4 space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-gasmi-gold">Kartu Perkembangan Pribadi</span>
+          <h2 class="text-lg font-extrabold text-white" id="selfMemberName">Ahmad Fauzan (Contoh Anggota)</h2>
+          <p class="text-xs text-white/75" id="selfMemberMeta">Kelompok: Remaja (14 Tahun) · Tingkat: Pemula Dasar</p>
+        </div>
+        <div class="m3-card-dark p-4 space-y-2">
+          <h3 class="text-xs font-bold text-gasmi-gold uppercase">Riwayat Kehadiran Saya</h3>
+          <div id="selfAttendanceList" class="space-y-1.5 text-xs"></div>
+        </div>
+        <div class="m3-card-dark p-4 space-y-2">
+          <h3 class="text-xs font-bold text-gasmi-gold uppercase">Riwayat Evaluasi & Pembinaan</h3>
+          <div id="selfEvaluationList" class="space-y-1.5 text-xs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. TAB PROFIL (PEDOMAN, KESELAMATAN & ARSITEKTUR FLUTTER/APK) ==================== -->
+    <section id="view-profil" class="view-section hidden fade-in space-y-3">
+      <div class="m3-card p-4 flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-black/30 border border-gasmi-gold/50 flex items-center justify-center text-gasmi-gold text-xl">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-extrabold text-white" id="profileRoleName">Pelatih Ranting Nguruan (Admin)</h2>
+          <p class="text-xs text-white/70">Pagar Nusa GASMI Ranting Nguruan</p>
+          <p class="text-[10px] text-gasmi-gold mt-0.5">Mode Penyimpanan: Offline SQLite + Supabase Sync</p>
+        </div>
+      </div>
+
+      <!-- Sync Status & Manual Sync Button -->
+      <div class="m3-card-dark p-3.5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-white">Sinkronisasi Data Offline-First</p>
+          <p id="syncDetailText" class="text-[11px] text-white/60">Semua data lokal sudah tersinkron.</p>
+        </div>
+        <button onclick="manualSyncData()" class="px-3 py-2 rounded-xl bg-gasmi-green border border-gasmi-gold/40 text-gasmi-gold text-xs font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate"></i> Sinkronkan
+        </button>
+      </div>
+
+      <!-- Ketentuan Keselamatan & Penyesuaian Usia -->
+      <div class="m3-card-dark p-4 space-y-2.5">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gasmi-gold flex items-center gap-1.5">
+          <i class="fa-solid fa-heart-pulse"></i> Ketentuan Keselamatan Wajib
+        </h3>
+        <ul class="text-xs text-white/80 space-y-1.5 list-disc pl-4">
+          <li>Tidak memaksakan latihan fisik berdasarkan kemampuan anggota dewasa.</li>
+          <li>Tidak melakukan <i>sparring</i> keras untuk anggota pemula.</li>
+          <li>Latihan berpasangan wajib dalam pengawasan langsung pelatih.</li>
+          <li>Anggota sakit atau cedera wajib mendapat penyesuaian latihan.</li>
+          <li>Perlengkapan pelindung dan P3K harus tersedia di lokasi latihan.</li>
+        </ul>
+      </div>
+
+      <!-- DOKUMENTASI TEKNIS LENGKAP: ARSITEKTUR FLUTTER, SQLITE, SUPABASE RLS, & BUILD APK -->
+      <div class="m3-card-dark p-4 space-y-2.5 border border-gasmi-gold/30">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gasmi-gold flex items-center gap-1.5">
+            <i class="fa-solid fa-code"></i> Proyek Flutter, SQLite, Supabase & Build APK
+          </h3>
+          <button onclick="toggleTechDocs()" id="btnToggleTech" class="text-[11px] font-bold text-gasmi-gold underline">Lihat Kode Lengkap</button>
+        </div>
+        <p class="text-[11px] text-white/70">
+          Berisi struktur proyek Flutter Clean Architecture, skema tabel SQLite + Supabase RLS, Edge Function AI aman tanpa expose API key, dan perintah <code>flutter build apk --release</code>.
+        </p>
+        <div id="techDocsContainer" class="hidden space-y-3 pt-2">
+          <div class="bg-black/70 p-3 rounded-xl border border-white/10 space-y-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold text-gasmi-gold">1. STRUKTUR PROYEK FLUTTER</span>
+              <button onclick="copyCodeBlock('codeStructure')" class="text-[10px] text-white/70 hover:text-white"><i class="fa-solid fa-copy"></i> Salin</button>
+            </div>
+            <pre id="codeStructure" class="text-[10px] text-emerald-300 overflow-x-auto leading-relaxed">gasmi_training_assistant/
+├── android/app/src/main/AndroidManifest.xml
+├── lib/
+│   ├── main.dart
+│   ├── core/
+│   │   ├── theme/gasmi_theme.dart        # M3 (#173D31, #101010, #D9B75B)
+│   │   ├── database/sqlite_helper.dart   # Offline-first SQLite + sync_queue
+│   │   ├── network/supabase_service.dart # Auth & Sync ke Supabase
+│   │   └── security/ai_proxy_client.dart # Panggil Edge Function (tanpa API key di APK)
+│   ├── features/
+│   │   ├── auth/                         # Login Pelatih & Anggota (No public signup)
+│   │   ├── dashboard/                    # Beranda Pelatih & Beranda Anggota
+│   │   ├── curriculum/                   # 104 Pertemuan + 9 Field Lengkap
+│   │   ├── materials/                    # 9 Kategori Materi Terverifikasi
+│   │   ├── attendance_eval/              # Presensi Offline & Evaluasi 6 Aspek
+│   │   └── ai_assistant/                 # GASMI AI Assistant + Guardrails
+├── supabase/
+│   ├── schema_rls.sql                    # Tabel + Row Level Security (RLS)
+│   └── functions/gasmi-ai/index.ts       # Backend AI Aman (Gemini/LLM Proxy)
+└── pubspec.yaml</pre>
+          </div>
+
+          <div class="bg-black/70 p-3 rounded-xl border border-white/10 space-y-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold text-gasmi-gold">2. SUPABASE SQL + ROW LEVEL SECURITY (RLS)</span>
+              <button onclick="copyCodeBlock('codeSql')" class="text-[10px] text-white/70 hover:text-white"><i class="fa-solid fa-copy"></i> Salin</button>
+            </div>
+            <pre id="codeSql" class="text-[10px] text-amber-200 overflow-x-auto leading-relaxed">-- Tabel Profil Pengguna (Akun Anggota dibuat oleh Pelatih via Admin Function)
+create table profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text not null,
+  role text not null check (role in ('pelatih', 'anggota')),
+  age_group text check (age_group in ('anak', 'remaja')),
+  skill_level text default 'pemula',
+  updated_at timestamptz default now()
+);
+alter table profiles enable row level security;
+
+-- Pelatih baca/kelola semua; Anggota hanya baca profil sendiri
+create policy "Pelatih full access profiles" on profiles
+  for all using (exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'pelatih'));
+create policy "Anggota read own profile" on profiles
+  for select using (id = auth.uid());
+
+-- Tabel Kurikulum 104 Pertemuan
+create table curriculum_meetings (
+  id int primary key,
+  stage int not null,
+  theme text not null,
+  objective text not null,
+  main_material text not null,
+  movement_material text not null,
+  warmup text not null,
+  core_drill text not null,
+  cooldown text not null,
+  evaluation_guide text not null,
+  coach_notes text,
+  verified_by uuid references profiles(id),
+  updated_at timestamptz default now()
+);
+alter table curriculum_meetings enable row level security;
+create policy "Semua user baca kurikulum" on curriculum_meetings for select using (auth.role() = 'authenticated');
+create policy "Hanya pelatih ubah kurikulum" on curriculum_meetings for all using (
+  exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'pelatih')
+);
+
+-- Tabel Presensi & Evaluasi (Last-Write-Wins via updated_at)
+create table attendance_records (
+  id uuid primary key,
+  meeting_id int references curriculum_meetings(id),
+  member_id uuid references profiles(id),
+  session_date date not null,
+  status text check (status in ('Hadir','Izin','Sakit','Alpa')),
+  updated_at timestamptz default now()
+);
+alter table attendance_records enable row level security;
+create policy "Pelatih kelola presensi" on attendance_records for all using (
+  exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'pelatih')
+);
+create policy "Anggota baca presensi sendiri" on attendance_records for select using (member_id = auth.uid());</pre>
+          </div>
+
+          <div class="bg-black/70 p-3 rounded-xl border border-white/10 space-y-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold text-gasmi-gold">3. EDGE FUNCTION AI AMAN (supabase/functions/gasmi-ai/index.ts)</span>
+              <button onclick="copyCodeBlock('codeEdge')" class="text-[10px] text-white/70 hover:text-white"><i class="fa-solid fa-copy"></i> Salin</button>
+            </div>
+            <pre id="codeEdge" class="text-[10px] text-sky-300 overflow-x-auto leading-relaxed">import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// API KEY disimpan di Supabase Secrets (AI_API_KEY), TIDAK PERNAH di APK Android
+const SYSTEM_PROMPT = `Anda adalah GASMI AI ASSISTANT untuk Pelatih Pagar Nusa GASMI Ranting Nguruan.
+ATURAN MUTLAK:
+1. Anda asisten pelatih, BUKAN pengganti pelatih.
+2. DILARANG mengarang jurus/teknik dan mengklaimnya sebagai materi resmi GASMI.
+3. Hanya gunakan referensi materi terverifikasi yang dikirim dalam konteks.
+4. Utamakan keselamatan anak-anak dan remaja (tanpa sparring keras untuk pemula).
+5. DILARANG memberi diagnosis medis atau memaksa latihan saat cedera.`;
+
+serve(async (req) => {
+  const { prompt, verifiedMaterials, ageGroup } = await req.json();
+  const apiKey = Deno.env.get("AI_API_KEY");
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\nKelompok Usia: ${ageGroup}\nMateri Terverifikasi: ${JSON.stringify(verifiedMaterials)}\nPermintaan Pelatih: ${prompt}` }] }]
+    })
+  });
+  const data = await response.json();
+  return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
+});</pre>
+          </div>
+
+          <div class="bg-black/70 p-3 rounded-xl border border-white/10 space-y-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold text-gasmi-gold">4. PERINTAH BUILD APK ANDROID (FLUTTER CLI)</span>
+              <button onclick="copyCodeBlock('codeBuild')" class="text-[10px] text-white/70 hover:text-white"><i class="fa-solid fa-copy"></i> Salin</button>
+            </div>
+            <pre id="codeBuild" class="text-[10px] text-white/90 overflow-x-auto leading-relaxed">flutter create gasmi_training_assistant
+cd gasmi_training_assistant
+flutter pub add supabase_flutter sqflite path provider intl flutter_dotenv
+flutter pub get
+# Uji di emulator / perangkat Android:
+flutter run
+# Build file APK rilis siap pasang di HP Android:
+flutter build apk --release
+# Hasil file berada di: build/app/outputs/flutter-apk/app-release.apk</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== MODAL: DETAIL / EDIT PERTEMUAN (9 FIELD LENGKAP) ==================== -->
+  <div id="meetingModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="bg-gasmi-surface border border-gasmi-gold/30 rounded-3xl max-w-md w-full max-h-[88vh] overflow-y-auto p-5 space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+        <h3 id="meetingModalTitle" class="text-sm font-extrabold text-gasmi-gold">Detail Pertemuan</h3>
+        <button onclick="closeModal('meetingModal')" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="meetingModalBody" class="space-y-2.5 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TAMBAH / EDIT MATERI ==================== -->
+  <div id="materialModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="bg-gasmi-surface border border-gasmi-gold/30 rounded-3xl max-w-md w-full max-h-[88vh] overflow-y-auto p-5 space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+        <h3 class="text-sm font-extrabold text-gasmi-gold">Input / Verifikasi Materi GASMI</h3>
+        <button onclick="closeModal('materialModal')" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveMaterialForm(event)" class="space-y-2.5 text-xs">
+        <input type="hidden" id="matEditId">
+        <div>
+          <label class="text-white/70 block mb-1">Kategori Materi</label>
+          <select id="matCategory" class="w-full p-2.5 rounded-xl bg-black/60 border border-white/15 text-white"></select>
+        </div>
+        <div>
+          <label class="text-white/70 block mb-1">Judul Materi *</label>
+          <input type="text" id="matTitle" required placeholder="Contoh: Sikap Kuda-Kuda Dasar" class="w-full p-2.5 rounded-xl bg-black/60 border border-white/15 text-white">
+        </div>
+        <div>
+          <label class="text-white/70 block mb-1">Tingkat Kesulitan</label>
+          <select id="matDifficulty" class="w-full p-2.5 rounded-xl bg-black/60 border border-white/15 text-white">
+            <option value="Pemula Dasar">Pemula Dasar</option>
+            <option value="Menengah Awal">Menengah Awal</option>
+            <option value="Penguatan">Penguatan</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-white/70 block mb-1">Deskripsi & Tujuan Pembelajaran *</label>
+          <textarea id="matDesc" required rows="2" placeholder="Penjelasan singkat dan tujuan..." class="w-full p-2.5 rounded-xl bg-black/60 border border-white/15 text-white"></textarea>
+        </div>
+        <div>
+          <label class="text-white/70 block mb-1">Instruksi Pelaksanaan (Sesuai Arahan Resmi) *</label>
+          <textarea id="matSteps" required rows="3" placeholder="Langkah gerakan sesuai kurikulum resmi GASMI..." class="w-full p-2.5 rounded-xl bg-black/60 border border-white/15 text-white"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-white/70 block mb-1">Link Video Latihan</label>
+            <input type="text" id="matVideo" placeholder="URL / Offline Asset" class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Catatan Pelatih</label>
+            <input type="text" id="matNotes" placeholder="Fokus keselamatan..." class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs">Simpan & Verifikasi Materi</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: GASMI AI ASSISTANT ==================== -->
+  <div id="aiModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-2">
+    <div class="bg-gasmi-surface border border-gasmi-gold/40 rounded-3xl max-w-md w-full h-[85vh] flex flex-col justify-between p-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gasmi-green border border-gasmi-gold/50 flex items-center justify-center text-gasmi-gold">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-extrabold text-gasmi-gold">GASMI AI ASSISTANT</h3>
+            <p class="text-[10px] text-white/60">Asisten Pelatih · Terikat Materi Terverifikasi</p>
+          </div>
+        </div>
+        <button onclick="closeModal('aiModal')" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Guardrail Notice -->
+      <div class="my-2 px-3 py-2 rounded-xl bg-amber-950/60 border border-gasmi-gold/30 text-[10px] text-amber-200 leading-snug">
+        <i class="fa-solid fa-shield-halved text-gasmi-gold mr-1"></i>
+        <strong>Catatan AI:</strong> AI adalah asisten pelatih, tidak mengarang jurus resmi GASMI, tidak memberi diagnosis medis, dan memerlukan koneksi internet.
+      </div>
+
+      <!-- Chat Feed -->
+      <div id="aiChatFeed" class="flex-1 overflow-y-auto space-y-2.5 pr-1 text-xs">
+        <div class="bg-gasmi-green/80 border border-gasmi-gold/25 p-3 rounded-2xl rounded-tl-sm text-white/90 space-y-1.5">
+          <p class="font-bold text-gasmi-gold">Assalamu'alaikum, Pelatih.</p>
+          <p>Saya siap membantu menyusun susunan latihan berdasarkan durasi, variasi pemanasan anak/remaja, permainan edukatif, atau ringkasan evaluasi menggunakan materi yang sudah diverifikasi pelatih.</p>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-2 text-[10px]">
+        <button onclick="useAiChip('Buatkan latihan pendasaran selama 90 menit untuk anggota pemula usia 10-15 tahun.')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-gasmi-gold whitespace-nowrap border border-gasmi-gold/20">Latihan 90m (10-15 thn)</button>
+        <button onclick="useAiChip('Buatkan variasi pemanasan dan permainan edukatif untuk anak-anak pemula.')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-gasmi-gold whitespace-nowrap border border-gasmi-gold/20">Pemanasan Anak</button>
+        <button onclick="useAiChip('Susun laporan perkembangan pembinaan tahap I.')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-gasmi-gold whitespace-nowrap border border-gasmi-gold/20">Laporan Tahap I</button>
+      </div>
+
+      <!-- Input Box -->
+      <form onsubmit="sendAiPrompt(event)" class="flex gap-2 pt-1 border-t border-white/10">
+        <input type="text" id="aiPromptInput" placeholder="Tulis instruksi untuk asisten pelatih..." class="flex-1 px-3 py-2.5 rounded-xl bg-black/60 border border-white/15 text-xs text-white focus:outline-none focus:border-gasmi-gold">
+        <button type="submit" class="px-4 py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold text-xs">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TAMBAH ANGGOTA / JADWAL ==================== -->
+  <div id="genericModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-gasmi-surface border border-gasmi-gold/30 rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2">
+        <h3 id="genericModalTitle" class="text-sm font-extrabold text-gasmi-gold">Form</h3>
+        <button onclick="closeModal('genericModal')" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="genericModalBody" class="text-xs space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM NAVIGATION BAR (5 MENU UTAMA) ==================== -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-gasmi-green border-t border-gasmi-gold/25 z-40 shadow-2xl">
+    <div class="max-w-md mx-auto grid grid-cols-5 h-16">
+      <button onclick="switchNav('beranda')" id="nav-beranda" class="nav-tab flex flex-col items-center justify-center text-gasmi-gold font-bold text-[10px] gap-1">
+        <i class="fa-solid fa-house text-base"></i>
+        <span>Beranda</span>
+      </button>
+      <button onclick="switchNav('latihan')" id="nav-latihan" class="nav-tab flex flex-col items-center justify-center text-white/65 hover:text-white font-medium text-[10px] gap-1">
+        <i class="fa-solid fa-calendar-days text-base"></i>
+        <span>Latihan</span>
+      </button>
+      <button onclick="switchNav('materi')" id="nav-materi" class="nav-tab flex flex-col items-center justify-center text-white/65 hover:text-white font-medium text-[10px] gap-1">
+        <i class="fa-solid fa-book-open text-base"></i>
+        <span>Materi</span>
+      </button>
+      <button onclick="switchNav('anggota')" id="nav-anggota" class="nav-tab flex flex-col items-center justify-center text-white/65 hover:text-white font-medium text-[10px] gap-1">
+        <i class="fa-solid fa-users text-base"></i>
+        <span>Anggota</span>
+      </button>
+      <button onclick="switchNav('profil')" id="nav-profil" class="nav-tab flex flex-col items-center justify-center text-white/65 hover:text-white font-medium text-[10px] gap-1">
+        <i class="fa-solid fa-user text-base"></i>
+        <span>Profil</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOAST MESSAGE -->
+  <div id="toastBox" class="fixed top-16 left-1/2 -translate-x-1/2 bg-gasmi-gold text-gasmi-black font-extrabold text-xs px-4 py-2 rounded-full shadow-xl z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+    Notifikasi
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DATA KURIKULUM 104 PERTEMUAN (DISESUAIKAN DENGAN PROGRAM LATIHAN SATU TAHUN)
+    // =========================================================================
+    const RAW_CURRICULUM_104 = [
+      [1, 1, "Orientasi ranting, perkenalan pelatih dan anggota, penyampaian tujuan latihan", "Pengenalan dasar gerak, sikap dan teknik latihan fisik", "Anggota mengenal lingkungan latihan dan tujuan pembinaan"],
+      [2, 1, "Pengenalan sejarah Pagar Nusa dan GASMI melalui cerita dan diskusi", "Pengenalan dasar gerak, sikap dan teknik latihan fisik", "Anggota mampu menjelaskan secara sederhana identitas organisasi"],
+      [3, 1, "Adab kepada guru, pelatih, orang tua, dan sesama anggota", "Pengenalan dasar gerak, sikap dan teknik latihan fisik", "Anggota menunjukkan sikap hormat dan sopan"],
+      [4, 1, "Tata tertib, kedisiplinan, dan tanggung jawab anggota", "Salam Pagar Nusa 1-6; Pernafasan hitungan", "Anggota memahami aturan latihan"],
+      [5, 1, "Pengenalan tradisi pembukaan dan penutupan latihan sesuai arahan pelatih", "Salam Pagar Nusa 7-12; Nafas tarik tahan lepas", "Anggota mampu mengikuti tata cara latihan"],
+      [6, 1, "Pengenalan lingkungan, perlengkapan, dan keselamatan latihan", "Pengenalan jangka 8 (1-4); Pernafasan 1 (simpan tangan)", "Anggota memahami penggunaan perlengkapan secara aman"],
+      [7, 1, "Pemanasan, pengenalan bagian tubuh, dan koordinasi gerak", "Pengenalan jangka 8 (5-8); Pernafasan 2 (simpan perut)", "Anggota mampu mengikuti gerakan pemanasan"],
+      [8, 1, "Latihan keseimbangan statis dan dinamis", "Pengenalan pukulan 1 dan tendangan 1; Pernafasan 3 simpan punggung", "Anggota mampu menjaga keseimbangan"],
+      [9, 1, "Pengenalan sikap tubuh dan posisi benar sesuai materi pelatih", "Pengenalan tangkisan kaki 1 dan tangkisan tangan 1; Pernafasan 4 simpan dada", "Anggota mulai memahami posisi tubuh"],
+      [10, 1, "Pengenalan Pagar Nusa dasar sesuai materi resmi", "Pengenalan pukulan 2 dan tendangan 2; Pernafasan 5 simpan kaki", "Anggota mampu mempraktikkan posisi dasar dengan bimbingan"],
+      [11, 1, "Latihan perpindahan posisi dan koordinasi kaki", "Pengenalan tangkisan kaki 2 dan tangkisan tangan 2; Pernafasan 6 seluruh tubuh", "Anggota mampu berpindah posisi secara terkontrol"],
+      [12, 1, "Pengenalan pola langkah dasar sesuai arahan pelatih", "Pengenalan pukulan 3 dan tendangan 3; Pernafasan 7 rahang", "Anggota mulai memahami arah dan pola langkah"],
+      [13, 1, "Latihan kelenturan, koordinasi, dan mobilitas", "Pengenalan tangkisan kaki 3 dan tangkisan tangan 3; Materi jual beli serangan", "Anggota menunjukkan peningkatan keluwesan gerak"],
+      [14, 1, "Pengenalan nilai persaudaraan dan saling menghormati", "Pengenalan pukulan 4 dan tendangan 4; Tangkapan kaki 1", "Anggota mampu bekerja sama dalam kelompok"],
+      [15, 1, "Pengulangan sikap tubuh dan kuda-kuda dasar", "Pengenalan tangkisan kaki 4 dan tangkisan tangan 4; Tangkapan tangan 1", "Anggota mampu mengulang materi dengan lebih tepat"],
+      [16, 1, "Pengulangan pola langkah dan keseimbangan", "Pengenalan pukulan 5 dan tendangan 5; Tangkapan kaki 2", "Gerakan lebih stabil dan terarah"],
+      [17, 1, "Permainan koordinasi dan reaksi sederhana", "Pengenalan tangkisan kaki 5 dan tangkisan tangan 5; Tangkapan tangan 2", "Anggota mampu merespons instruksi pelatih"],
+      [18, 1, "Latihan kekuatan dasar menggunakan berat badan sendiri", "Pengenalan pukulan 6 dan tendangan 6; Tangkapan kaki 3", "Anggota mampu mengikuti latihan sesuai kemampuan"],
+      [19, 1, "Latihan daya tahan ringan melalui permainan gerak", "Pengenalan tangkisan kaki 6 dan tangkisan tangan 6; Tangkapan tangan 3", "Anggota mampu menjaga aktivitas fisik secara bertahap"],
+      [20, 1, "Pengenalan teknik tangan sesuai materi resmi pelatih", "Pengenalan pukulan 7 dan tendangan 7; Tangkapan kaki 4", "Anggota memahami bentuk gerakan dasar"],
+      [21, 1, "Pengenalan teknik dasar kaki sesuai materi resmi pelatih", "Pengenalan tangkisan kaki 7 dan tangkisan tangan 7; Tangkapan tangan 4", "Anggota memahami bentuk gerakan dasar"],
+      [22, 1, "Pengenalan pertahanan dasar sesuai materi resmi pelatih", "Pengenalan pukulan 8 dan tendangan 8; Tangkapan kaki 5", "Anggota memahami prinsip menjaga diri"],
+      [23, 1, "Pengulangan seluruh materi gerak tahap I", "Pengenalan tangkisan kaki 8 dan tangkisan tangan 8; Tangkapan tangan 5", "Anggota mampu mengingat materi yang sudah diajarkan"],
+      [24, 1, "Praktik berkelompok: sikap, langkah, dan koordinasi", "Pengenalan pukulan 9-10 dan tendangan 9-10; Tangkapan kaki 6", "Anggota mampu mengikuti rangkaian sederhana"],
+      [25, 1, "Evaluasi adab, kedisiplinan, dan penguasaan materi dasar", "Pengenalan tangkisan kaki 9-10 dan tangkisan tangan 9-10; Tangkapan tangan 6", "Pelatih memperoleh gambaran kemampuan setiap anggota"],
+      [26, 1, "Evaluasi tahap I dan penyampaian umpan balik", "Pengenalan pukulan 11-12 dan tendangan 11-12; Tangkapan kaki 7", "Anggota mengetahui materi yang sudah dikuasai dan perlu diperbaiki"],
+      // TAHAP II (27-52)
+      [27, 2, "Penguatan sikap dasar dan kuda-kuda", "Bantingan 1; Tangkapan tangan 7", "Posisi tubuh semakin stabil"],
+      [28, 2, "Pendalaman pola langkah sesuai materi pelatih", "Bantingan 2; Tangkapan kaki 8", "Anggota mampu melakukan pola langkah dengan benar"],
+      [29, 2, "Latihan perpindahan sikap dan arah gerak", "Bantingan 2; Tangkapan kaki 9", "Perpindahan gerak lebih terkoordinasi"],
+      [30, 2, "Pendalaman teknik dasar tangan sesuai materi resmi", "Bantingan 3; Tangkapan kaki 10", "Gerakan tangan lebih terarah"],
+      [31, 2, "Pendalaman teknik dasar kaki sesuai materi resmi", "Bantingan 4; Tangkapan tangan 8", "Gerakan kaki lebih terkontrol"],
+      [32, 2, "Latihan koordinasi tangan dan kaki", "Bantingan 5; Tangkapan tangan 9", "Anggota mampu menggabungkan gerak sederhana"],
+      [33, 2, "Pendalaman teknik pertahanan dasar", "Bantingan 6; Tangkapan tangan 10", "Anggota mempraktikkan pertahanan secara terkendali"],
+      [34, 2, "Pengenalan prinsip jarak dan posisi aman", "Seongan 1; Counter bantingan 1", "Anggota memahami jarak dalam latihan berpasangan"],
+      [35, 2, "Latihan kelincahan dan perubahan arah", "Seongan 2; Counter bantingan 2", "Anggota mampu bergerak lebih responsif"],
+      [36, 2, "Latihan kekuatan dasar: dorongan, tarikan, dan stabilitas tubuh", "Seongan 3; Counter bantingan 3", "Kekuatan dasar berkembang sesuai kemampuan"],
+      [37, 2, "Latihan kelenturan dan mobilitas", "Seongan 4; Counter bantingan 4", "Rentang gerak meningkat secara aman"],
+      [38, 2, "Pengenalan materi jurus resmi GASMI oleh pelatih", "Seongan 5; Counter bantingan 5", "Anggota mengenal materi jurus yang diajarkan"],
+      [39, 2, "Pengulangan bagian awal materi jurus sesuai arahan pelatih", "Seongan 6; Counter bantingan 6", "Anggota mulai mengingat urutan gerak"],
+      [40, 2, "Pendalaman bagian lanjutan materi jurus", "Drop kaki 1; Counter seongan 1", "Anggota mengikuti urutan gerak dengan bimbingan"],
+      [41, 2, "Penggabungan bagian materi jurus yang telah dipelajari", "Drop kaki 2; Counter seongan 2", "Rangkaian gerak mulai tersusun"],
+      [42, 2, "Perbaikan sikap tubuh, arah, dan ketepatan gerak jurus", "Drop kaki 3; Counter seongan 3", "Gerakan lebih rapi dan terkontrol"],
+      [43, 2, "Latihan gerak berpasangan tanpa kontak keras", "Drop kaki 4; Counter seongan 4", "Anggota mampu menjaga jarak dan keselamatan"],
+      [44, 2, "Pengenalan prinsip serangan dan pertahanan dalam latihan dasar", "Kuncian atas 1; Counter seongan 5", "Anggota memahami fungsi gerakan"],
+      [45, 2, "Latihan respons terhadap instruksi dan gerakan pasangan", "Kuncian atas 2; Counter seongan 6", "Anggota mampu merespons dengan tertib"],
+      [46, 2, "Latihan kebugaran melalui permainan tradisional dan sirkuit ringan", "Kuncian atas 3; Pencak panggung", "Kebugaran berkembang tanpa mengabaikan keselamatan"],
+      [47, 2, "Pengulangan teknik tangan, kaki, dan pertahanan", "Kuncian atas 4; Pencak panggung", "Anggota semakin menguasai materi dasar"],
+      [48, 2, "Pengulangan materi jurus resmi yang sudah diajarkan", "Kuncian bawah 1; Pencak panggung", "Anggota mampu mengingat urutan materi"],
+      [49, 2, "Praktik rangkaian gerak dasar secara individu", "Kuncian bawah 2; Pencak panggung", "Anggota mampu mempraktikkan materi secara mandiri"],
+      [50, 2, "Praktik kelompok dan koreksi antarkelompok dengan pendampingan pelatih", "Kuncian bawah 3; Pencak panggung", "Anggota belajar bekerja sama dan memperbaiki gerakan"],
+      [51, 2, "Evaluasi teknik, kebugaran, dan kedisiplinan tahap II", "Kuncian bawah 4; Pencak panggung", "Pelatih dapat mengukur perkembangan anggota"],
+      [52, 2, "Evaluasi tahap II dan penguatan materi yang belum dikuasai", "Kuncian bawah 5; Pencak panggung senjata", "Anggota memahami hasil evaluasi dan target berikutnya"],
+      // TAHAP III (53-78)
+      [53, 3, "Pengulangan materi sikap, kuda-kuda, dan langkah", "Kombinasi serangan pukulan dan tendangan", "Anggota mampu melakukan gerakan dasar secara konsisten"],
+      [54, 3, "Pendalaman materi jurus sesuai urutan pelatih", "Kombinasi serangan pukulan dan tendangan", "Anggota mampu mengingat urutan gerakan"],
+      [55, 3, "Koreksi detail gerakan jurus: sikap, arah, dan keseimbangan", "Kombinasi serangan pukulan dan tendangan", "Gerakan lebih tepat dan tidak terburu-buru"],
+      [56, 3, "Pengulangan materi teknik tangan", "Kombinasi serangan pukulan dan tendangan", "Teknik tangan lebih terarah"],
+      [57, 3, "Pengulangan materi teknik kaki", "Kombinasi serangan pukulan, tendangan, tangkisan", "Teknik kaki lebih stabil"],
+      [58, 3, "Penggabungan teknik tangan dan kaki", "Kombinasi serangan pukulan, tendangan, tangkisan", "Anggota mampu melakukan kombinasi sederhana"],
+      [59, 3, "Penggabungan teknik dasar dengan pola langkah", "Kombinasi serangan pukulan, tendangan, tangkisan", "Gerakan lebih terkoordinasi"],
+      [60, 3, "Pendalaman teknik pertahanan sesuai materi pelatih", "Kombinasi serangan pukulan, tendangan, tangkisan", "Anggota mampu menerapkan teknik pertahanan secara terkendali"],
+      [61, 3, "Latihan menjaga jarak dan posisi tubuh", "Kombinasi serangan pukulan dan tendangan", "Anggota memahami posisi aman saat berlatih"],
+      [62, 3, "Latihan respons terhadap gerakan pasangan dengan kecepatan rendah", "Kombinasi serangan pukulan dan tendangan", "Anggota mampu merespons tanpa panik"],
+      [63, 3, "Latihan berpasangan: serangan dan pertahanan yang telah ditentukan pelatih", "Kombinasi serangan pukulan, tendangan dan bantingan", "Anggota mampu mengikuti instruksi dengan tertib"],
+      [64, 3, "Pengulangan materi jurus secara bertahap", "Kombinasi serangan pukulan, tendangan dan bantingan", "Urutan jurus semakin dikuasai"],
+      [65, 3, "Latihan ketahanan fisik ringan dan koordinasi", "Kombinasi serangan pukulan, tendangan dan bantingan", "Anggota mampu menjaga kualitas gerakan ketika lelah ringan"],
+      [66, 3, "Pengenalan pengendalian emosi dan penggunaan bela diri secara bertanggung jawab", "Kombinasi serangan pukulan, tendangan dan bantingan", "Anggota memahami bahwa kemampuan bela diri bukan untuk kesombongan"],
+      [67, 3, "Pendalaman nilai persaudaraan dan tanggung jawab anggota", "Kombinasi serangan pukulan, tendangan dan bantingan", "Anggota menunjukkan sikap saling menghargai"],
+      [68, 3, "Pengenalan budaya dan tradisi lokal Nguruan yang relevan dengan pembinaan", "Kombinasi serangan pukulan dan tendangan", "Anggota mengenal nilai budaya dan lingkungan setempat"],
+      [69, 3, "Pengulangan teknik dasar secara individu", "Kombinasi serangan pukulan, tendangan, tangkisan", "Anggota mampu melakukan teknik tanpa banyak arahan"],
+      [70, 3, "Praktik rangkaian gerak sesuai materi resmi GASMI", "Kombinasi serangan pukulan, tendangan dan bantingan", "Anggota mampu menggabungkan materi yang telah dipelajari"],
+      [71, 3, "Latihan berpasangan: pengenalan situasi dan respons aman", "Kombinasi serangan pukulan dan tendangan", "Anggota mampu menjaga keselamatan diri dan pasangan"],
+      [72, 3, "Latihan ketepatan gerak dan pengaturan tempo", "Kombinasi serangan pukulan, tendangan, tangkisan", "Gerakan lebih teratur"],
+      [73, 3, "Pengulangan materi jurus dengan koreksi individu", "Kombinasi serangan pukulan, tendangan, tangkisan", "Kekurangan gerakan dapat diidentifikasi"],
+      [74, 3, "Praktik kelompok: materi gerak dan jurus", "Kombinasi serangan pukulan dan tendangan", "Anggota mampu mengikuti latihan secara bersama"],
+      [75, 3, "Simulasi evaluasi materi dasar dan jurus", "Kombinasi serangan pukulan, tendangan, tangkisan", "Anggota terbiasa mengikuti penilaian"],
+      [76, 3, "Evaluasi kebugaran, koordinasi, dan penguasaan teknik", "Kombinasi serangan pukulan dan tendangan", "Perkembangan fisik dan teknik dapat dipantau"],
+      [77, 3, "Evaluasi adab, kedisiplinan, dan pemahaman tradisi", "Kombinasi serangan pukulan, tendangan, tangkisan", "Anggota menunjukkan perkembangan karakter"],
+      [78, 3, "Evaluasi tahap III dan penguatan materi", "Seluruh materi", "Pelatih menentukan materi yang perlu dimantapkan"],
+      // TAHAP IV (79-104)
+      [79, 4, "Pengulangan seluruh sikap dasar", "Gerak langkah 7 dan 8", "Anggota mampu melakukan sikap dasar dengan benar"],
+      [80, 4, "Pengulangan seluruh pola langkah", "Gerak langkah 7 dan 8", "Anggota mampu mengikuti pola langkah yang telah diajarkan"],
+      [81, 4, "Pemantapan teknik dasar tangan", "Gerak langkah 7 dan 8", "Teknik tangan lebih konsisten"],
+      [82, 4, "Pemantapan teknik dasar kaki", "Gerak langkah 4 mata angin", "Teknik kaki lebih terkontrol"],
+      [83, 4, "Pemantapan teknik pertahanan", "Gerak langkah 4 mata angin", "Anggota mampu melakukan pertahanan dengan tepat"],
+      [84, 4, "Penggabungan sikap, langkah, dan teknik dasar", "Gerak langkah 4 mata angin", "Anggota mampu melakukan rangkaian sederhana"],
+      [85, 4, "Pengulangan materi jurus resmi GASMI", "Gerak langkah 4 mata angin", "Anggota semakin menguasai materi jurus"],
+      [86, 4, "Pemantapan ketepatan dan urutan jurus", "Kombinasi langkah beserta serangan", "Gerakan lebih tertib dan sesuai arahan pelatih"],
+      [87, 4, "Praktik materi jurus secara individu", "Kombinasi langkah beserta serangan", "Anggota mampu mempraktikkan materi secara mandiri"],
+      [88, 4, "Praktik materi jurus secara berkelompok", "Kombinasi langkah beserta serangan", "Anggota mampu mengikuti latihan bersama"],
+      [89, 4, "Latihan koordinasi dan kelincahan", "Kombinasi langkah beserta serangan", "Kemampuan koordinasi semakin baik"],
+      [90, 4, "Latihan kekuatan dan daya tahan sesuai kelompok usia", "Kombinasi langkah beserta serangan", "Kebugaran berkembang secara proporsional"],
+      [91, 4, "Latihan berpasangan dengan pengawasan pelatih", "Kombinasi langkah beserta serangan", "Anggota mampu menjaga keselamatan pasangan"],
+      [92, 4, "Penerapan teknik dasar dalam simulasi terkendali", "Praktik Materi tarung", "Anggota mampu menerapkan teknik sesuai instruksi"],
+      [93, 4, "Penguatan sejarah, identitas, dan nilai perjuangan Pagar Nusa GASMI", "Praktik Materi tarung", "Anggota memahami identitas organisasi"],
+      [94, 4, "Penguatan adab, akhlak, dan tanggung jawab anggota", "Praktik Materi tarung", "Anggota menunjukkan perilaku yang baik"],
+      [95, 4, "Penguatan persaudaraan dan kerja sama melalui kegiatan kelompok", "Praktik Materi tarung", "Anggota mampu menjaga kekompakan"],
+      [96, 4, "Pengulangan materi yang paling banyak belum dikuasai", "Kombinasi langkah dan serangan berpasangan", "Kekurangan individu mulai diperbaiki"],
+      [97, 4, "Latihan kombinasi", "Kombinasi langkah dan serangan berpasangan", "Anggota mampu mengingat dan mempraktikkan materi"],
+      [98, 4, "Simulasi evaluasi teknik dan jurus", "Praktik semua materi gerak", "Anggota siap mengikuti evaluasi akhir"],
+      [99, 4, "Simulasi evaluasi adab, kedisiplinan, dan pemahaman organisasi", "Praktik semua materi gerak", "Anggota mampu menjelaskan nilai dasar pembinaan"],
+      [100, 4, "Evaluasi kebugaran dan koordinasi akhir", "Evaluasi materi", "Pelatih memperoleh data perkembangan fisik"],
+      [101, 4, "Uji penguasaan materi dasar dan jurus", "Tes akhir", "Tingkat penguasaan materi dapat dinilai"],
+      [102, 4, "Uji praktik dan koreksi akhir oleh pelatih", "Pengayaan kemampuan akhir", "Anggota mengetahui kekuatan dan kekurangannya"],
+      [103, 4, "Evaluasi tahunan dan pemetaan kemampuan anggota", "Latih tanding", "Tersusun catatan perkembangan setiap anggota"],
+      [104, 4, "Penutupan program, refleksi, apresiasi, dan penyusunan target tahun berikutnya", "Evaluasi bersama", "Program tahunan selesai dan rencana lanjutan terbentuk"]
+    ];
+
+    const STAGE_NAMES = {
+      1: "Tahap I · Pengenalan & Akar Tradisi",
+      2: "Tahap II · Pendasaran Gerak & Keilmuan",
+      3: "Tahap III · Pendalaman Jurus & Bela Diri",
+      4: "Tahap IV · Pemantapan & Evaluasi"
+    };
+
+    const MATERIAL_CATEGORIES = [
+      "Semua", "Pendasaran", "Sikap dan kuda-kuda", "Langkah",
+      "Teknik dasar", "Materi jurus", "Kebugaran",
+      "Akar tradisi", "Ke-NU-an dan nilai persaudaraan", "Kedisiplinan dan karakter"
+    ];
+
+    // =========================================================================
+    // 2. STATE & STORAGE (OFFLINE-FIRST LOCALSTORAGE + SYNC QUEUE)
+    // =========================================================================
+    let state = {
+      role: 'pelatih', // 'pelatih' | 'anggota'
+      isOnline: true,
+      pendingSyncCount: 0,
+      stageFilter: 'all',
+      materialCat: 'Semua',
+      completedIds: JSON.parse(localStorage.getItem('gasmi_v2_done')) || [],
+      curriculum: JSON.parse(localStorage.getItem('gasmi_v2_curriculum')) || RAW_CURRICULUM_104.map(row => ({
+        id: row[0],
+        stage: row[1],
+        tema: row[2],
+        tujuan: row[4],
+        materiUtama: row[2],
+        materiGerak: row[3],
+        pemanasan: "Pembukaan, doa, pemanasan statis & dinamis sesuai kelompok usia (15 menit).",
+        latihanInti: `${row[2]} — Fokus gerak: ${row[3]}.`,
+        pendinginan: "Peregangan ringan, pengaturan nafas, dan penenangan (10 menit).",
+        evaluasi: row[4],
+        catatanPelatih: "Ikuti arahan pelatih; utamakan adab dan keselamatan."
+      })),
+      materials: JSON.parse(localStorage.getItem('gasmi_v2_materials')) || [
+        {
+          id: 'mat-1', category: 'Akar tradisi', title: 'Adab Pembukaan & Penutupan Latihan GASMI',
+          difficulty: 'Pemula Dasar', verified: true,
+          desc: 'Membiasakan tata krama penghormatan kepada guru, pelatih, dan sesama anggota sebelum serta sesudah latihan.',
+          steps: '1. Berbaris rapi sesuai saf.\n2. Doa bersama dipimpin pelatih.\n3. Salam Pagar Nusa sesuai tata cara ranting.\n4. Peneguhan niat menjaga akhlak dan persaudaraan.',
+          video: 'Offline Modul #01', notes: 'Wajib diterapkan di setiap pertemuan.'
+        },
+        {
+          id: 'mat-2', category: 'Sikap dan kuda-kuda', title: 'Sikap Tubuh & Kuda-Kuda Dasar',
+          difficulty: 'Pemula Dasar', verified: true,
+          desc: 'Membangun stabilitas tumpuan kaki, keseimbangan titik berat tubuh, dan kesiapan gerak.',
+          steps: '1. Posisi siap tegak dengan pandangan lurus.\n2. Buka kaki sesuai instruksi pelatih.\n3. Tekuk lutut proporsional menjaga punggung tetap tegak.\n4. Lakukan pengulangan statis dan perpindahan posisi.',
+          video: 'Offline Modul #02', notes: 'Jangan memaksakan kedalaman kuda-kuda pada anak pemula.'
+        },
+        {
+          id: 'mat-3', category: 'Langkah', title: 'Pola Langkah Dasar & Jangka 8',
+          difficulty: 'Pemula Dasar', verified: true,
+          desc: 'Melatih kelincahan arah gerak, koordinasi kaki, dan ketepatan posisi langkah.',
+          steps: '1. Pengenalan Jangka 8 (1-4 dan 5-8) sesuai arahan pelatih.\n2. Perpindahan langkah geser, angkat, dan putar.\n3. Menjaga keseimbangan saat berpindah arah.',
+          video: 'Offline Modul #03', notes: 'Dilatih bertahap tanpa terburu-buru.'
+        },
+        {
+          id: 'mat-4', category: 'Teknik dasar', title: 'Pukulan, Tendangan, Tangkisan & Tangkapan Dasar',
+          difficulty: 'Pemula Dasar', verified: true,
+          desc: 'Pengenalan gerak dasar serangan dan pertahanan terkendali sesuai kurikulum resmi pelatih.',
+          steps: '1. Pukulan & tendangan dasar 1–12 secara bertahap.\n2. Tangkisan tangan & kaki 1–10.\n3. Tangkapan tangan & kaki dasar dengan pengawasan penuh.',
+          video: 'Offline Modul #04', notes: 'Dilarang melakukan kontak keras bagi pemula.'
+        },
+        {
+          id: 'mat-5', category: 'Materi jurus', title: 'Pengenalan Urutan Jurus Resmi GASMI',
+          difficulty: 'Menengah Awal', verified: true,
+          desc: 'Mempelajari urutan gerak jurus resmi GASMI sesuai tahapan yang diajarkan pelatih.',
+          steps: '1. Mengikuti bagian awal jurus sesuai hitungan pelatih.\n2. Memperbaiki arah pandang, sikap tubuh, dan ketepatan urutan.\n3. Pengulangan individu dan kelompok.',
+          video: 'Offline Modul #05', notes: 'Kemurnian gerakan sepenuhnya merujuk pelatih resmi GASMI.'
+        },
+        {
+          id: 'mat-6', category: 'Ke-NU-an dan nilai persaudaraan', title: 'Identitas Pagar Nusa & Jiwa Nahdliyin',
+          difficulty: 'Pemula Dasar', verified: true,
+          desc: 'Menanamkan rasa memiliki terhadap Pagar Nusa GASMI sebagai badan otonom Nahdlatul Ulama.',
+          steps: '1. Penyampaian sejarah singkat melalui cerita dan diskusi.\n2. Menjaga ukhuwah antaranggota tanpa membeda-bedakan.\n3. Mengamalkan nilai tawasuth, tasamuh, dan tawazun.',
+          video: 'Diskusi Singkat Sesi', notes: 'Disampaikan melalui keteladanan dan cerita singkat.'
+        }
+      ],
+      members: JSON.parse(localStorage.getItem('gasmi_v2_members')) || [
+        { id: 'usr-1', name: 'Ahmad Fauzan (Contoh)', age: 14, group: 'Remaja', level: 'Pemula Dasar', active: true },
+        { id: 'usr-2', name: 'Nabila Putri (Contoh)', age: 11, group: 'Anak-anak', level: 'Pemula Dasar', active: true },
+        { id: 'usr-3', name: 'Rizky Pratama (Contoh)', age: 15, group: 'Remaja', level: 'Tahap II', active: true },
+        { id: 'usr-4', name: 'Siti Aisyah (Contoh)', age: 10, group: 'Anak-anak', level: 'Pemula Dasar', active: true }
+      ],
+      attendance: JSON.parse(localStorage.getItem('gasmi_v2_attendance')) || [
+        { id: 'att-1', meetingId: 1, date: '2026-11-14', memberId: 'usr-1', status: 'Hadir' },
+        { id: 'att-2', meetingId: 1, date: '2026-11-14', memberId: 'usr-2', status: 'Hadir' },
+        { id: 'att-3', meetingId: 1, date: '2026-11-14', memberId: 'usr-3', status: 'Izin' }
+      ],
+      evaluations: JSON.parse(localStorage.getItem('gasmi_v2_evaluations')) || [
+        {
+          id: 'ev-1', memberId: 'usr-1', memberName: 'Ahmad Fauzan (Contoh)', date: '2026-11-18',
+          scores: { disiplin: 85, hadir: 90, materi: 80, kebugaran: 82, karakter: 88, perkembangan: 84 },
+          finalScore: '84.30', category: 'Baik (76–85)', followUp: 'Melanjutkan pembinaan dengan penguatan'
+        }
+      ],
+      nextSchedule: JSON.parse(localStorage.getItem('gasmi_v2_schedule')) || {
+        date: 'Sabtu, 19.30 WIB · Halaman Ranting Nguruan',
+        title: 'Pendasaran',
+        desc: 'Pemanasan, pengulangan dasar, kedisiplinan, dan evaluasi.'
+      }
+    };
+
+    function persistAll() {
+      localStorage.setItem('gasmi_v2_done', JSON.stringify(state.completedIds));
+      localStorage.setItem('gasmi_v2_curriculum', JSON.stringify(state.curriculum));
+      localStorage.setItem('gasmi_v2_materials', JSON.stringify(state.materials));
+      localStorage.setItem('gasmi_v2_members', JSON.stringify(state.members));
+      localStorage.setItem('gasmi_v2_attendance', JSON.stringify(state.attendance));
+      localStorage.setItem('gasmi_v2_evaluations', JSON.stringify(state.evaluations));
+      localStorage.setItem('gasmi_v2_schedule', JSON.stringify(state.nextSchedule));
+
+      if (!state.isOnline) {
+        state.pendingSyncCount++;
+        updateSyncIndicator();
+      }
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      box.innerText = msg;
+      box.classList.remove('opacity-0');
+      setTimeout(() => box.classList.add('opacity-0'), 2500);
+    }
+
+    // =========================================================================
+    // 3. ROLE & ONLINE/OFFLINE HANDLERS
+    // =========================================================================
+    function switchRole(role) {
+      state.role = role;
+      const btnP = document.getElementById('roleBtnPelatih');
+      const btnA = document.getElementById('roleBtnAnggota');
+
+      if (role === 'pelatih') {
+        btnP.className = 'px-2.5 py-1 rounded-full bg-gasmi-green text-white border border-gasmi-gold/50 transition';
+        btnA.className = 'px-2.5 py-1 rounded-full text-white/60 hover:text-white transition';
+        document.getElementById('roleTagHero').innerText = 'Admin Pelatih';
+        document.getElementById('profileRoleName').innerText = 'Pelatih Ranting Nguruan (Admin)';
+        document.querySelectorAll('.coach-only').forEach(el => el.classList.remove('hidden'));
+        document.getElementById('anggotaPelatihPanel').classList.remove('hidden');
+        document.getElementById('anggotaMemberSelfPanel').classList.add('hidden');
+      } else {
+        btnA.className = 'px-2.5 py-1 rounded-full bg-gasmi-green text-white border border-gasmi-gold/50 transition';
+        btnP.className = 'px-2.5 py-1 rounded-full text-white/60 hover:text-white transition';
+        document.getElementById('roleTagHero').innerText = 'Akun Anggota';
+        document.getElementById('profileRoleName').innerText = 'Ahmad Fauzan (Anggota Pemula)';
+        document.querySelectorAll('.coach-only').forEach(el => el.classList.add('hidden'));
+        document.getElementById('anggotaPelatihPanel').classList.add('hidden');
+        document.getElementById('anggotaMemberSelfPanel').classList.remove('hidden');
+      }
+
+      renderBeranda();
+      renderCurriculum();
+      renderMaterials();
+      renderAnggotaViews();
+      showToast(`Beralih ke mode ${role === 'pelatih' ? 'Pelatih (Admin)' : 'Anggota'}`);
+    }
+
+    function toggleConnectionMode() {
+      state.isOnline = !state.isOnline;
+      const badge = document.getElementById('connBadge');
+      const text = document.getElementById('connText');
+      if (state.isOnline) {
+        badge.className = 'px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50';
+        text.innerText = 'Online';
+        if (state.pendingSyncCount > 0) manualSyncData();
+      } else {
+        badge.className = 'px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 bg-amber-950 text-amber-300 border border-amber-600/50';
+        text.innerText = 'Offline';
+        showToast('Mode Offline aktif. Perubahan disimpan di SQLite lokal.');
+      }
+      updateSyncIndicator();
+    }
+
+    function updateSyncIndicator() {
+      const detail = document.getElementById('syncDetailText');
+      const badge = document.getElementById('syncQueueBadge');
+      if (state.pendingSyncCount > 0) {
+        detail.innerText = `${state.pendingSyncCount} perubahan lokal menunggu sinkronisasi.`;
+        if (badge) badge.innerText = `${state.pendingSyncCount} Antrean Offline`;
+      } else {
+        detail.innerText = 'Semua data lokal sudah tersinkron dengan Supabase.';
+        if (badge) badge.innerText = 'Tersinkron';
+      }
+    }
+
+    function manualSyncData() {
+      if (!state.isOnline) {
+        showToast('Tidak dapat sinkronisasi saat Offline.');
+        return;
+      }
+      state.pendingSyncCount = 0;
+      updateSyncIndicator();
+      showToast('Sinkronisasi data ke cloud berhasil!');
+    }
+
+    // =========================================================================
+    // 4. BOTTOM NAVIGATION
+    // =========================================================================
+    function switchNav(tab) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('text-gasmi-gold', 'font-bold');
+        btn.classList.add('text-white/65', 'font-medium');
+      });
+      const active = document.getElementById(`nav-${tab}`);
+      active.classList.remove('text-white/65', 'font-medium');
+      active.classList.add('text-gasmi-gold', 'font-bold');
+      window.scrollTo(0, 0);
+    }
+
+    // =========================================================================
+    // 5. RENDER BERANDA (PELATIH VS ANGGOTA)
+    // =========================================================================
+    function renderBeranda() {
+      document.getElementById('heroMeetingCount').innerText = state.curriculum.length;
+      document.getElementById('heroDoneCount').innerText = state.completedIds.length;
+      document.getElementById('nextScheduleDate').innerText = state.nextSchedule.date;
+      document.getElementById('nextScheduleTitle').innerText = state.nextSchedule.title;
+      document.getElementById('nextScheduleDesc').innerText = state.nextSchedule.desc;
+
+      const statsRow = document.getElementById('berandaStatsRow');
+      const grid = document.getElementById('menuUtamaGrid');
+
+      if (state.role === 'pelatih') {
+        const hadirCount = state.attendance.filter(a => a.status === 'Hadir').length;
+        statsRow.innerHTML = `
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Anggota Aktif</p>
+            <p class="text-lg font-extrabold text-gasmi-gold">${state.members.length}</p>
+          </div>
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Presensi Hadir</p>
+            <p class="text-lg font-extrabold text-emerald-400">${hadirCount}</p>
+          </div>
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Evaluasi</p>
+            <p class="text-lg font-extrabold text-white">${state.evaluations.length}</p>
+          </div>
+        `;
+
+        grid.innerHTML = `
+          <button onclick="switchNav('latihan')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-regular fa-calendar text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Jadwal Latihan</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Buka menu &rarr;</p>
+            </div>
+          </button>
+          <button onclick="switchNav('materi')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-solid fa-book-open text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Materi Latihan</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Buka menu &rarr;</p>
+            </div>
+          </button>
+          <button onclick="switchNav('anggota')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-solid fa-user-group text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Data Anggota</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Buka menu &rarr;</p>
+            </div>
+          </button>
+          <button onclick="openAiAssistant()" class="m3-card p-4 text-left space-y-3 border-gasmi-gold/50">
+            <i class="fa-solid fa-robot text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">AI Assistant</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Buka menu &rarr;</p>
+            </div>
+          </button>
+        `;
+      } else {
+        const myAtt = state.attendance.filter(a => a.memberId === 'usr-1');
+        const myHadir = myAtt.filter(a => a.status === 'Hadir').length;
+        const myEval = state.evaluations.find(e => e.memberId === 'usr-1');
+
+        statsRow.innerHTML = `
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Kehadiran Saya</p>
+            <p class="text-lg font-extrabold text-emerald-400">${myHadir}/${myAtt.length}</p>
+          </div>
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Nilai Evaluasi</p>
+            <p class="text-lg font-extrabold text-gasmi-gold">${myEval ? myEval.finalScore : '-'}</p>
+          </div>
+          <div class="m3-card-dark p-3 text-center">
+            <p class="text-[10px] text-white/60">Materi Offline</p>
+            <p class="text-lg font-extrabold text-white">${state.materials.length}</p>
+          </div>
+        `;
+
+        grid.innerHTML = `
+          <button onclick="switchNav('latihan')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-regular fa-calendar text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Jadwal & Kurikulum</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Lihat program &rarr;</p>
+            </div>
+          </button>
+          <button onclick="switchNav('materi')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-solid fa-book-open text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Panduan Materi</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Baca offline &rarr;</p>
+            </div>
+          </button>
+          <button onclick="switchNav('anggota')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-solid fa-clipboard-check text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Kehadiran Saya</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Riwayat absen &rarr;</p>
+            </div>
+          </button>
+          <button onclick="switchNav('anggota')" class="m3-card p-4 text-left space-y-3">
+            <i class="fa-solid fa-chart-line text-gasmi-gold text-xl"></i>
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Perkembangan</h3>
+              <p class="text-[11px] text-gasmi-gold/80 mt-0.5">Hasil evaluasi &rarr;</p>
+            </div>
+          </button>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // 6. KURIKULUM 104 PERTEMUAN (CRUD + 9 FIELD LENGKAP) & TIMER 190 MENIT
+    // =========================================================================
+    function switchLatihanSub(sub) {
+      document.getElementById('latihanSubKurikulum').classList.toggle('hidden', sub !== 'kurikulum');
+      document.getElementById('latihanSubSesi').classList.toggle('hidden', sub !== 'sesi');
+      document.getElementById('subBtnKurikulum').className = sub === 'kurikulum'
+        ? 'py-2 rounded-lg bg-gasmi-green text-white border border-gasmi-gold/40'
+        : 'py-2 rounded-lg text-white/60';
+      document.getElementById('subBtnSesi').className = sub === 'sesi'
+        ? 'py-2 rounded-lg bg-gasmi-green text-white border border-gasmi-gold/40'
+        : 'py-2 rounded-lg text-white/60';
+    }
+
+    function filterStage(stg) {
+      state.stageFilter = stg;
+      document.querySelectorAll('.stg-pill').forEach(p => {
+        p.className = 'stg-pill px-3 py-1 rounded-full bg-white/10 text-white/70 whitespace-nowrap';
+      });
+      document.getElementById(`stg-${stg}`).className = 'stg-pill px-3 py-1 rounded-full bg-gasmi-gold text-gasmi-black whitespace-nowrap';
+      renderCurriculum();
+    }
+
+    function renderCurriculum() {
+      const q = (document.getElementById('curriculumSearch').value || '').toLowerCase().trim();
+      const box = document.getElementById('curriculumContainer');
+      const list = state.curriculum.filter(item => {
+        if (state.stageFilter !== 'all' && item.stage !== state.stageFilter) return false;
+        if (q) {
+          return String(item.id) === q ||
+            item.tema.toLowerCase().includes(q) ||
+            item.materiGerak.toLowerCase().includes(q) ||
+            item.tujuan.toLowerCase().includes(q);
+        }
+        return true;
+      });
+
+      if (list.length === 0) {
+        box.innerHTML = `<div class="m3-card-dark p-6 text-center text-xs text-white/50">Tidak ada pertemuan ditemukan.</div>`;
+        return;
+      }
+
+      box.innerHTML = list.map(m => {
+        const done = state.completedIds.includes(m.id);
+        return `
+          <div class="m3-card-dark p-3.5 space-y-2 border ${done ? 'border-emerald-500/40' : 'border-white/10'}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-lg bg-gasmi-green text-gasmi-gold font-extrabold text-xs border border-gasmi-gold/30">#${m.id}</span>
+                <span class="text-[10px] font-semibold text-white/60">${STAGE_NAMES[m.stage] || 'Program Tambahan'}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                ${state.role === 'pelatih' ? `
+                  <button onclick="toggleMeetingComplete(${m.id})" class="px-2 py-1 rounded-lg text-[10px] font-bold ${done ? 'bg-emerald-600 text-white' : 'bg-white/10 text-white/75'}">
+                    ${done ? '✓ Selesai' : 'Tandai'}
+                  </button>
+                ` : (done ? '<span class="text-[10px] text-emerald-400 font-bold">✓ Terlaksana</span>' : '')}
+              </div>
+            </div>
+            <h4 class="text-xs font-bold text-white leading-snug">${m.tema}</h4>
+            <div class="px-2.5 py-1.5 rounded-xl bg-gasmi-green/50 border border-gasmi-gold/20 text-[11px] text-gasmi-gold">
+              <strong>Materi Gerak:</strong> ${m.materiGerak}
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[10px] text-white/60 truncate max-w-[68%]">Target: ${m.tujuan}</span>
+              <button onclick="openMeetingDetail(${m.id})" class="text-[11px] font-bold text-gasmi-gold hover:underline">Detail 9 Poin &rarr;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleMeetingComplete(id) {
+      const idx = state.completedIds.indexOf(id);
+      if (idx > -1) state.completedIds.splice(idx, 1);
+      else state.completedIds.push(id);
+      persistAll();
+      renderCurriculum();
+      renderBeranda();
+      showToast(`Status Pertemuan #${id} diperbarui`);
+    }
+
+    function openMeetingDetail(id) {
+      const m = state.curriculum.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById('meetingModalTitle').innerText = `Pertemuan #${m.id} · ${STAGE_NAMES[m.stage] || ''}`;
+      document.getElementById('meetingModalBody').innerHTML = `
+        <div class="space-y-2">
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">1. Nomor Pertemuan:</strong> #${m.id}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">2. Tema Latihan:</strong> ${m.tema}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">3. Tujuan Latihan:</strong> ${m.tujuan}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">4. Materi Utama & Gerak:</strong> ${m.materiUtama} (${m.materiGerak})</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">5. Pemanasan:</strong> ${m.pemanasan}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">6. Latihan Inti:</strong> ${m.latihanInti}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">7. Pendinginan:</strong> ${m.pendinginan}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">8. Evaluasi:</strong> ${m.evaluasi}</div>
+          <div class="p-2.5 rounded-xl bg-black/40"><strong class="text-gasmi-gold">9. Catatan Pelatih:</strong> ${m.catatanPelatih}</div>
+        </div>
+        ${state.role === 'pelatih' ? `
+          <div class="flex gap-2 pt-2">
+            <button onclick="openCurriculumModal(${m.id})" class="flex-1 py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold">Edit Pertemuan</button>
+            <button onclick="deleteCurriculumItem(${m.id})" class="px-3.5 py-2.5 rounded-xl bg-red-900/70 text-red-200 font-bold">Hapus</button>
+          </div>
+        ` : ''}
+      `;
+      document.getElementById('meetingModal').classList.remove('hidden');
+    }
+
+    function openCurriculumModal(editId = null) {
+      closeModal('meetingModal');
+      const existing = editId ? state.curriculum.find(x => x.id === editId) : null;
+      const nextNum = existing ? existing.id : (state.curriculum.reduce((max, c) => Math.max(max, c.id), 0) + 1);
+
+      document.getElementById('genericModalTitle').innerText = existing ? `Edit Pertemuan #${existing.id}` : 'Tambah Pertemuan Baru';
+      document.getElementById('genericModalBody').innerHTML = `
+        <form onsubmit="saveCurriculumItem(event, ${existing ? existing.id : 'null'})" class="space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-white/70 block mb-1">Nomor Pertemuan</label>
+              <input type="number" id="curNum" value="${nextNum}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+            </div>
+            <div>
+              <label class="text-white/70 block mb-1">Tahap</label>
+              <select id="curStage" class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+                <option value="1" ${existing?.stage === 1 ? 'selected' : ''}>Tahap I</option>
+                <option value="2" ${existing?.stage === 2 ? 'selected' : ''}>Tahap II</option>
+                <option value="3" ${existing?.stage === 3 ? 'selected' : ''}>Tahap III</option>
+                <option value="4" ${existing?.stage === 4 ? 'selected' : ''}>Tahap IV</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Tema & Materi Utama</label>
+            <input type="text" id="curTema" value="${existing?.tema || ''}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Materi Gerak (Sesuai Pelatih)</label>
+            <input type="text" id="curGerak" value="${existing?.materiGerak || ''}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Tujuan & Indikator Evaluasi</label>
+            <input type="text" id="curTujuan" value="${existing?.tujuan || ''}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Catatan Pelatih</label>
+            <input type="text" id="curCatatan" value="${existing?.catatanPelatih || 'Utamakan adab dan keselamatan.'}" class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold">Simpan Program Latihan</button>
+        </form>
+      `;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function saveCurriculumItem(e, oldId) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('curNum').value);
+      const stage = parseInt(document.getElementById('curStage').value);
+      const tema = document.getElementById('curTema').value.trim();
+      const gerak = document.getElementById('curGerak').value.trim();
+      const tujuan = document.getElementById('curTujuan').value.trim();
+      const catatan = document.getElementById('curCatatan').value.trim();
+
+      const obj = {
+        id, stage, tema, tujuan, materiUtama: tema, materiGerak: gerak,
+        pemanasan: "Pembukaan, doa, pemanasan sesuai kelompok usia (15 menit).",
+        latihanInti: `${tema} — Fokus gerak: ${gerak}.`,
+        pendinginan: "Pendinginan & evaluasi singkat (10 menit).",
+        evaluasi: tujuan, catatanPelatih: catatan
+      };
+
+      if (oldId !== null) {
+        const idx = state.curriculum.findIndex(x => x.id === oldId);
+        if (idx > -1) state.curriculum[idx] = obj;
+      } else {
+        state.curriculum.push(obj);
+        state.curriculum.sort((a, b) => a.id - b.id);
+      }
+
+      persistAll();
+      closeModal('genericModal');
+      renderCurriculum();
+      renderBeranda();
+      showToast(`Pertemuan #${id} disimpan`);
+    }
+
+    function deleteCurriculumItem(id) {
+      state.curriculum = state.curriculum.filter(x => x.id !== id);
+      persistAll();
+      closeModal('meetingModal');
+      renderCurriculum();
+      renderBeranda();
+      showToast(`Pertemuan #${id} dihapus`);
+    }
+
+    // TIMER 190 MENIT (SESUAI HALAMAN 2 PDF TERBARU)
+    const SESSION_190_SEGMENTS = [
+      { title: "Pembukaan, doa, dan penanaman adab", mins: 10 },
+      { title: "Pemanasan", mins: 15 },
+      { title: "Persiapan fisik", mins: 65 },
+      { title: "Istirahat", mins: 25 },
+      { title: "Materi teknik dan keilmuan", mins: 65 },
+      { title: "Evaluasi, nasihat, dan penutupan", mins: 10 }
+    ];
+    let activeSegIdx = 0;
+    let timerSecs = 10 * 60;
+    let timerHandle = null;
+
+    function renderSessionSegments() {
+      const box = document.getElementById('sessionSegmentsContainer');
+      box.innerHTML = SESSION_190_SEGMENTS.map((s, i) => `
+        <button onclick="selectSessionSegment(${i})" class="w-full p-2.5 rounded-xl flex items-center justify-between text-xs border ${i === activeSegIdx ? 'bg-gasmi-green border-gasmi-gold text-white font-bold' : 'bg-black/40 border-white/10 text-white/75'}">
+          <span>${i + 1}. ${s.title}</span>
+          <span class="text-gasmi-gold font-extrabold">${s.mins} menit</span>
+        </button>
+      `).join('');
+    }
+
+    function selectSessionSegment(idx) {
+      activeSegIdx = idx;
+      clearInterval(timerHandle);
+      timerHandle = null;
+      timerSecs = SESSION_190_SEGMENTS[idx].mins * 60;
+      document.getElementById('timerLabel').innerText = SESSION_190_SEGMENTS[idx].title;
+      document.getElementById('timerPlayIcon').className = 'fa-solid fa-play';
+      document.getElementById('timerPlayText').innerText = 'Mulai Sesi';
+      updateTimerClock();
+      renderSessionSegments();
+    }
+
+    function updateTimerClock() {
+      const m = Math.floor(timerSecs / 60).toString().padStart(2, '0');
+      const s = (timerSecs % 60).toString().padStart(2, '0');
+      document.getElementById('timerClock').innerText = `${m}:${s}`;
+    }
+
+    function toggleRunTimer() {
+      if (timerHandle) {
+        clearInterval(timerHandle);
+        timerHandle = null;
+        document.getElementById('timerPlayIcon').className = 'fa-solid fa-play';
+        document.getElementById('timerPlayText').innerText = 'Lanjutkan';
+      } else {
+        document.getElementById('timerPlayIcon').className = 'fa-solid fa-pause';
+        document.getElementById('timerPlayText').innerText = 'Jeda';
+        timerHandle = setInterval(() => {
+          if (timerSecs > 0) {
+            timerSecs--;
+            updateTimerClock();
+          } else {
+            clearInterval(timerHandle);
+            timerHandle = null;
+            showToast('Waktu segmen sesi selesai!');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetRunTimer() {
+      selectSessionSegment(activeSegIdx);
+    }
+
+    // =========================================================================
+    // 7. SISTEM MATERI (9 KATEGORI TERVERIFIKASI PELATIH)
+    // =========================================================================
+    function renderMaterials() {
+      const catBar = document.getElementById('materialCategoriesBar');
+      catBar.innerHTML = MATERIAL_CATEGORIES.map(c => `
+        <button onclick="setMatCat('${c}')" class="px-3 py-1.5 rounded-full whitespace-nowrap ${state.materialCat === c ? 'bg-gasmi-gold text-gasmi-black' : 'bg-white/10 text-white/75'}">
+          ${c}
+        </button>
+      `).join('');
+
+      const list = state.materials.filter(m => state.materialCat === 'Semua' || m.category === state.materialCat);
+      const box = document.getElementById('materialsContainer');
+
+      box.innerHTML = list.map(m => `
+        <div class="m3-card-dark p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gasmi-green text-gasmi-gold border border-gasmi-gold/30">${m.category}</span>
+            <span class="text-[10px] font-semibold text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Terverifikasi Pelatih</span>
+          </div>
+          <h3 class="text-sm font-extrabold text-white">${m.title}</h3>
+          <p class="text-xs text-white/75 leading-relaxed">${m.desc}</p>
+          <div class="p-2.5 rounded-xl bg-black/45 text-[11px] text-white/85 whitespace-pre-line border border-white/5">
+            <strong class="text-gasmi-gold block mb-1">Instruksi Pelaksanaan:</strong>${m.steps}
+          </div>
+          <div class="flex items-center justify-between text-[10px] text-white/60 pt-1">
+            <span>Kesulitan: <strong class="text-white">${m.difficulty}</strong> · ${m.video}</span>
+            ${state.role === 'pelatih' ? `<button onclick="deleteMaterial('${m.id}')" class="text-red-400 hover:underline">Hapus</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setMatCat(cat) {
+      state.materialCat = cat;
+      renderMaterials();
+    }
+
+    function openMaterialModal() {
+      const sel = document.getElementById('matCategory');
+      sel.innerHTML = MATERIAL_CATEGORIES.filter(c => c !== 'Semua').map(c => `<option value="${c}">${c}</option>`).join('');
+      document.getElementById('materialModal').classList.remove('hidden');
+    }
+
+    function saveMaterialForm(e) {
+      e.preventDefault();
+      state.materials.unshift({
+        id: 'mat-' + Date.now(),
+        category: document.getElementById('matCategory').value,
+        title: document.getElementById('matTitle').value.trim(),
+        difficulty: document.getElementById('matDifficulty').value,
+        desc: document.getElementById('matDesc').value.trim(),
+        steps: document.getElementById('matSteps').value.trim(),
+        video: document.getElementById('matVideo').value.trim() || 'Panduan Lokal',
+        notes: document.getElementById('matNotes').value.trim() || 'Terverifikasi pelatih.',
+        verified: true
+      });
+      persistAll();
+      closeModal('materialModal');
+      renderMaterials();
+      renderBeranda();
+      showToast('Materi berhasil ditambahkan & diverifikasi!');
+    }
+
+    function deleteMaterial(id) {
+      state.materials = state.materials.filter(m => m.id !== id);
+      persistAll();
+      renderMaterials();
+      showToast('Materi dihapus');
+    }
+
+    // =========================================================================
+    // 8. ANGGOTA, PRESENSI OFFLINE & EVALUASI 6 ASPEK
+    // =========================================================================
+    function switchAnggotaSub(sub) {
+      ['daftar', 'presensi', 'evaluasi'].forEach(k => {
+        document.getElementById(`subAnggota${k.charAt(0).toUpperCase() + k.slice(1)}`).classList.toggle('hidden', k !== sub);
+        document.getElementById(`angSub-${k}`).className = k === sub
+          ? 'py-2 rounded-lg bg-gasmi-green text-white border border-gasmi-gold/40'
+          : 'py-2 rounded-lg text-white/60';
+      });
+    }
+
+    function renderAnggotaViews() {
+      // 1. Daftar Anggota (Pelatih)
+      document.getElementById('subAnggotaDaftar').innerHTML = state.members.map(mem => `
+        <div class="m3-card-dark p-3.5 flex items-center justify-between">
+          <div>
+            <h4 class="text-xs font-extrabold text-white">${mem.name}</h4>
+            <p class="text-[11px] text-white/60">${mem.group} (${mem.age} thn) · ${mem.level}</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-700/40">Aktif</span>
+        </div>
+      `).join('');
+
+      // 2. Presensi Form & History
+      const meetSel = document.getElementById('presensiMeetingSelect');
+      meetSel.innerHTML = state.curriculum.slice(0, 26).map(m => `<option value="${m.id}">Pertemuan #${m.id}</option>`).join('');
+      document.getElementById('presensiDateInput').valueAsDate = new Date();
+
+      document.getElementById('presensiMembersList').innerHTML = state.members.map(mem => `
+        <div class="flex items-center justify-between bg-black/40 p-2 rounded-xl border border-white/5 text-xs">
+          <span class="font-semibold text-white truncate max-w-[55%]">${mem.name}</span>
+          <select data-member="${mem.id}" class="presensi-status-select p-1.5 rounded-lg bg-gasmi-card border border-white/15 text-gasmi-gold font-bold text-[11px]">
+            <option value="Hadir">Hadir</option>
+            <option value="Izin">Izin</option>
+            <option value="Sakit">Sakit</option>
+            <option value="Alpa">Alpa</option>
+          </select>
+        </div>
+      `).join('');
+
+      document.getElementById('attendanceHistoryBox').innerHTML = state.attendance.slice(0, 6).map(a => {
+        const mem = state.members.find(m => m.id === a.memberId);
+        return `
+          <div class="m3-card-dark px-3 py-2 flex items-center justify-between text-xs">
+            <span>${mem ? mem.name : a.memberId} · <span class="text-white/50">Pertemuan #${a.meetingId} (${a.date})</span></span>
+            <span class="font-bold text-gasmi-gold">${a.status}</span>
+          </div>
+        `;
+      }).join('');
+
+      // 3. Evaluasi 6 Aspek
+      document.getElementById('evalMemberSelect').innerHTML = state.members.map(m => `<option value="${m.id}">${m.name} (${m.group})</option>`).join('');
+      renderEvalSliders();
+      renderEvalRecords();
+
+      // 4. Tampilan Khusus Akun Anggota (Hanya Data Diri Sendiri)
+      const selfAtt = state.attendance.filter(a => a.memberId === 'usr-1');
+      document.getElementById('selfAttendanceList').innerHTML = selfAtt.map(a => `
+        <div class="flex justify-between p-2 rounded-lg bg-black/40">
+          <span>Pertemuan #${a.meetingId} (${a.date})</span>
+          <span class="font-bold text-emerald-400">${a.status}</span>
+        </div>
+      `).join('');
+
+      const selfEv = state.evaluations.filter(e => e.memberId === 'usr-1');
+      document.getElementById('selfEvaluationList').innerHTML = selfEv.map(e => `
+        <div class="p-2.5 rounded-lg bg-black/40 space-y-1">
+          <div class="flex justify-between font-bold">
+            <span>Tanggal: ${e.date}</span>
+            <span class="text-gasmi-gold">${e.finalScore} (${e.category})</span>
+          </div>
+          <p class="text-white/70 text-[11px]">Tindak lanjut: ${e.followUp}</p>
+        </div>
+      `).join('');
+    }
+
+    function saveAttendanceBatch() {
+      const meetingId = parseInt(document.getElementById('presensiMeetingSelect').value);
+      const date = document.getElementById('presensiDateInput').value;
+      document.querySelectorAll('.presensi-status-select').forEach(sel => {
+        state.attendance.unshift({
+          id: 'att-' + Date.now() + Math.random(),
+          meetingId, date,
+          memberId: sel.getAttribute('data-member'),
+          status: sel.value
+        });
+      });
+      persistAll();
+      renderAnggotaViews();
+      renderBeranda();
+      showToast('Presensi tersimpan secara offline & siap sinkron!');
+    }
+
+    const EVAL_ASPECTS = [
+      { key: 'disiplin', label: 'Kedisiplinan & Adab', weight: 0.25 },
+      { key: 'materi', label: 'Penguasaan Materi Resmi', weight: 0.30 },
+      { key: 'perkembangan', label: 'Perkembangan Kemampuan & Teknik', weight: 0.20 },
+      { key: 'kebugaran', label: 'Kebugaran & Koordinasi', weight: 0.10 },
+      { key: 'karakter', label: 'Sikap, Karakter & Tradisi', weight: 0.10 },
+      { key: 'hadir', label: 'Kehadiran & Persaudaraan', weight: 0.05 }
+    ];
+
+    function renderEvalSliders() {
+      const box = document.getElementById('evalSlidersContainer');
+      box.innerHTML = EVAL_ASPECTS.map(a => `
+        <div class="space-y-1">
+          <div class="flex justify-between text-[11px]">
+            <span class="text-white/85">${a.label} <span class="text-gasmi-gold">(${Math.round(a.weight * 100)}%)</span></span>
+            <span id="evVal-${a.key}" class="font-bold text-gasmi-gold">80</span>
+          </div>
+          <input type="range" id="evIn-${a.key}" min="0" max="100" value="80" oninput="recalcEvalScore()" class="w-full accent-gasmi-gold h-1.5 bg-black/60 rounded-lg">
+        </div>
+      `).join('');
+      recalcEvalScore();
+    }
+
+    function recalcEvalScore() {
+      let total = 0;
+      EVAL_ASPECTS.forEach(a => {
+        const v = parseInt(document.getElementById(`evIn-${a.key}`).value) || 0;
+        document.getElementById(`evVal-${a.key}`).innerText = v;
+        total += v * a.weight;
+      });
+      document.getElementById('evalFinalScore').innerText = total.toFixed(2);
+      let cat = 'Perlu Pembinaan Khusus (<60)';
+      let fol = 'Pendampingan dan evaluasi ulang';
+      if (total >= 86) { cat = 'Sangat Baik (86–100)'; fol = 'Dapat diberikan materi pengembangan'; }
+      else if (total >= 76) { cat = 'Baik (76–85)'; fol = 'Melanjutkan pembinaan dengan penguatan'; }
+      else if (total >= 60) { cat = 'Cukup (60–75)'; fol = 'Mengulang materi yang belum dikuasai'; }
+
+      document.getElementById('evalCategoryLabel').innerText = cat;
+      document.getElementById('evalFollowUpLabel').innerText = fol;
+    }
+
+    function submitMemberEvaluation() {
+      const memberId = document.getElementById('evalMemberSelect').value;
+      const mem = state.members.find(m => m.id === memberId);
+      const finalScore = document.getElementById('evalFinalScore').innerText;
+      const category = document.getElementById('evalCategoryLabel').innerText;
+      const followUp = document.getElementById('evalFollowUpLabel').innerText;
+
+      state.evaluations.unshift({
+        id: 'ev-' + Date.now(),
+        memberId,
+        memberName: mem ? mem.name : memberId,
+        date: new Date().toISOString().slice(0, 10),
+        finalScore, category, followUp
+      });
+      persistAll();
+      renderEvalRecords();
+      renderBeranda();
+      showToast('Hasil evaluasi anggota disimpan!');
+    }
+
+    function renderEvalRecords() {
+      document.getElementById('evalRecordsContainer').innerHTML = state.evaluations.map(e => `
+        <div class="m3-card-dark p-3 flex items-center justify-between text-xs">
+          <div>
+            <p class="font-bold text-white">${e.memberName}</p>
+            <p class="text-[10px] text-white/60">${e.date} · ${e.category}</p>
+          </div>
+          <span class="text-base font-extrabold text-gasmi-gold">${e.finalScore}</span>
+        </div>
+      `).join('');
+    }
+
+    function openAddMemberModal() {
+      document.getElementById('genericModalTitle').innerText = 'Daftarkan Akun Anggota (Khusus Pelatih)';
+      document.getElementById('genericModalBody').innerHTML = `
+        <form onsubmit="saveNewMember(event)" class="space-y-2.5">
+          <div>
+            <label class="text-white/70 block mb-1">Nama Lengkap Anggota (Dummy/Resmi)</label>
+            <input type="text" id="newMemName" required placeholder="Nama anggota..." class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-white/70 block mb-1">Usia (Tahun)</label>
+              <input type="number" id="newMemAge" min="6" max="30" value="12" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+            </div>
+            <div>
+              <label class="text-white/70 block mb-1">Kelompok Latihan</label>
+              <select id="newMemGroup" class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+                <option value="Anak-anak">Anak-anak</option>
+                <option value="Remaja">Remaja</option>
+              </select>
+            </div>
+          </div>
+          <p class="text-[10px] text-white/60">Akun dibuat oleh pelatih tanpa registrasi publik demi perlindungan data anak-anak.</p>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold">Buat Akun Anggota</button>
+        </form>
+      `;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function saveNewMember(e) {
+      e.preventDefault();
+      state.members.push({
+        id: 'usr-' + Date.now(),
+        name: document.getElementById('newMemName').value.trim(),
+        age: parseInt(document.getElementById('newMemAge').value),
+        group: document.getElementById('newMemGroup').value,
+        level: 'Pemula Dasar',
+        active: true
+      });
+      persistAll();
+      closeModal('genericModal');
+      renderAnggotaViews();
+      renderBeranda();
+      showToast('Akun anggota baru berhasil didaftarkan oleh pelatih');
+    }
+
+    function openScheduleModal() {
+      document.getElementById('genericModalTitle').innerText = 'Atur Jadwal Latihan Berikutnya';
+      document.getElementById('genericModalBody').innerHTML = `
+        <form onsubmit="saveNextSchedule(event)" class="space-y-2.5">
+          <div>
+            <label class="text-white/70 block mb-1">Waktu & Lokasi</label>
+            <input type="text" id="schDate" value="${state.nextSchedule.date}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Fokus Agenda</label>
+            <input type="text" id="schTitle" value="${state.nextSchedule.title}" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">
+          </div>
+          <div>
+            <label class="text-white/70 block mb-1">Rincian Kegiatan</label>
+            <textarea id="schDesc" rows="2" required class="w-full p-2 rounded-xl bg-black/60 border border-white/15 text-white">${state.nextSchedule.desc}</textarea>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gasmi-gold text-gasmi-black font-extrabold">Simpan Jadwal</button>
+        </form>
+      `;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function saveNextSchedule(e) {
+      e.preventDefault();
+      state.nextSchedule = {
+        date: document.getElementById('schDate').value.trim(),
+        title: document.getElementById('schTitle').value.trim(),
+        desc: document.getElementById('schDesc').value.trim()
+      };
+      persistAll();
+      closeModal('genericModal');
+      renderBeranda();
+      showToast('Agenda latihan berikutnya diperbarui');
+    }
+
+    // =========================================================================
+    // 9. GASMI AI ASSISTANT (GUARDRAILS KESELAMATAN & VERIFIKASI MATERI)
+    // =========================================================================
+    function openAiAssistant() {
+      if (!state.isOnline) {
+        showToast('GASMI AI Assistant membutuhkan koneksi internet (Online).');
+        return;
+      }
+      document.getElementById('aiModal').classList.remove('hidden');
+    }
+
+    function useAiChip(text) {
+      document.getElementById('aiPromptInput').value = text;
+    }
+
+    function sendAiPrompt(e) {
+      e.preventDefault();
+      if (!state.isOnline) {
+        showToast('Koneksi terputus. AI Assistant tidak tersedia saat Offline.');
+        return;
+      }
+      const input = document.getElementById('aiPromptInput');
+      const prompt = input.value.trim();
+      if (!prompt) return;
+
+      const feed = document.getElementById('aiChatFeed');
+      feed.innerHTML += `
+        <div class="ml-8 bg-gasmi-card border border-white/10 p-3 rounded-2xl rounded-tr-sm text-white">
+          ${prompt}
+        </div>
+      `;
+      input.value = '';
+
+      const responseText = generateSafeGasmiAiResponse(prompt);
+      setTimeout(() => {
+        feed.innerHTML += `
+          <div class="mr-4 bg-gasmi-green/90 border border-gasmi-gold/30 p-3 rounded-2xl rounded-tl-sm text-white/95 whitespace-pre-line leading-relaxed">
+            ${responseText}
+          </div>
+        `;
+        feed.scrollTop = feed.scrollHeight;
+      }, 350);
+    }
+
+    function generateSafeGasmiAiResponse(prompt) {
+      const p = prompt.toLowerCase();
+      if (p.includes('cedera') || p.includes('sakit') || p.includes('patah') || p.includes('obat')) {
+        return "⚠️ PERINGATAN KESELAMATAN & MEDIS:\nSaya tidak dapat memberikan diagnosis medis atau rekomendasi pengobatan. Sesuai Ketentuan Keselamatan GASMI Ranting Nguruan, anggota yang sakit atau cedera wajib diistirahatkan dari latihan fisik dan diperiksakan ke tenaga medis/pertolongan pertama.";
+      }
+      if (p.includes('jurus baru') || p.includes('karang') || p.includes('jurus rahasia')) {
+        return "⚠️ VERIFIKASI PELATIH DIPERLUKAN:\nSesuai prinsip 'Menjaga Kemurnian Materi', GASMI AI Assistant dilarang mengarang teknik atau jurus dan mengklaimnya sebagai materi resmi GASMI. Silakan gunakan materi yang telah diverifikasi pada menu Materi.";
+      }
+      if (p.includes('90') || p.includes('pendasaran') || p.includes('10-15')) {
+        return "📋 REKOMENDASI SESI PENDASARAN (90 MENIT · USIA 10–15 TAHUN PEMULA)\n" +
+          "Disusun berdasarkan materi terverifikasi Ranting Nguruan:\n\n" +
+          "1. Pembukaan & Penanaman Adab (10 Menit)\n   - Doa pembuka, Salam Pagar Nusa (Pertemuan #4–#5), dan pengingat tata tertib.\n" +
+          "2. Pemanasan Dinamis & Permainan Koordinasi (15 Menit)\n   - Mobilitas sendi ringan & permainan reaksi sederhana (Pertemuan #17) tanpa beban berlebih.\n" +
+          "3. Materi Tradisi & Ke-NU-an (10 Menit)\n   - Cerita singkat sejarah Pagar Nusa GASMI & adab kepada guru/sesama (Pertemuan #2–#3).\n" +
+          "4. Latihan Inti Pendasaran Terverifikasi (45 Menit)\n   - Sikap tubuh & kuda-kuda dasar (15m)\n   - Pola langkah dasar & Jangka 8 (15m)\n   - Pengulangan pukulan/tangkisan dasar sesuai arahan pelatih tanpa kontak keras (15m).\n" +
+          "5. Pendinginan, Evaluasi & Penutup (10 Menit)\n   - Pernafasan teratur, koreksi sikap, dan doa penutup.\n\n" +
+          "🛡️ Catatan Keselamatan: Pastikan pengawasan penuh pelatih dan sesuaikan intensitas dengan kemampuan masing-masing anak.";
+      }
+      return "📋 SARAN ASISTEN PELATIH GASMI:\n" +
+        "Berdasarkan kurikulum 104 pertemuan Ranting Nguruan:\n" +
+        "• Gunakan pendekatan bertingkat (permainan koordinasi untuk anak-anak, teknik terperinci untuk remaja).\n" +
+        "• Rujuk materi terverifikasi pada kategori Pendasaran, Sikap & Kuda-kuda, serta Akar Tradisi.\n" +
+        "• Keputusan akhir materi keilmuan tetap berada pada kewenangan pelatih.";
+    }
+
+    // =========================================================================
+    // 10. MODAL & TECH DOC HELPERS
+    // =========================================================================
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function toggleTechDocs() {
+      const el = document.getElementById('techDocsContainer');
+      el.classList.toggle('hidden');
+      document.getElementById('btnToggleTech').innerText = el.classList.contains('hidden') ? 'Lihat Kode Lengkap' : 'Sembunyikan';
+    }
+
+    function copyCodeBlock(elId) {
+      const text = document.getElementById(elId).innerText;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('Kode berhasil disalin ke clipboard!');
+    }
+
+    // BOOTSTRAP APP
+    window.onload = function() {
+      renderBeranda();
+      renderCurriculum();
+      renderSessionSegments();
+      renderMaterials();
+      renderAnggotaViews();
+      updateSyncIndicator();
+    };
+  </script>
+</body>
+</html>
