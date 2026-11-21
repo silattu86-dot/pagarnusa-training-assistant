@@ -1,0 +1,11 @@
+{
+  "appId": "id.or.pagarnusa.gasmi.nguruan",
+  "appName": "GASMI Training Assistant",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#101010"
+  }
+}
