@@ -26,9 +26,9 @@ jobs:
 
       - name: 4. Instal Capacitor & Buat Proyek Android
         run: |
-          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Asisten Pelatihan GASMI" "com.pagarnusa.assistant" --web-dir=.
           npx cap add android
-          npx cap sync android
 
       - name: 5. Compile Proyek Menjadi File APK
         run: |
